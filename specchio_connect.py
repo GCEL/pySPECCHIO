@@ -19,5 +19,8 @@ specchio_client = cf.createClient(db_descriptor_list.get(0))
 db_descriptor = db_descriptor_list.get(0)
 db_descriptor.getDataSourceName()
 
+# Create a query object
+QUERIES = jp.JPackage('ch').specchio.queries
+query = QUERIES.Query()
 
 
