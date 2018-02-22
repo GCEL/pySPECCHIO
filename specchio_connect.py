@@ -41,6 +41,72 @@ query.add_condition(cond)
 # Now get the spectrum IDs that match the query
 ids = specchio_client.getSpectrumIdsMatchingQuery(query)
 
+print(ids.size())
 print(ids)
 
-jp.shutdownJVM()
+# Add another condition to restrict maximum altitude
+cond = QUERIES.EAVQueryConditionObject(attr)
+cond.setValue('55.0')
+cond.setOperator('<')
+query.add_condition(cond)
+
+ids = specchio_client.getSpectrumIdsMatchingQuery(query)
+print(ids)
+print(ids.size())
+
+# LOADING SPECTRAL DATA FROM THE DATABASE
+
+# Create spectral spaces and order the spectra bt their acquisationtime
+# Note: this does not load the spectral dta yet but only prepares the containers
+spaces = specchio_client.getSpaces(ids, 'Acquisition Time')
+
+# Find out how many spaces we have received
+len(spaces)
+
+# Get the first space
+space = spaces[0]
+
+ids = space.getSpectrumIds() # get them sorted by acquisition time
+
+# Load the spectral data from the database into the space
+space = specchio_client.loadSpace(space)
+
+# Get the spectral vectors, wavelengths, and measurement unit
+vectors = space.getVectorsAsArray()
+wvl = space.getAverageWavelengths()
+unit = space.getMeasurementUnit().getUnitName()
+
+def plot_spectra():
+    import numpy as np
+    import matplotlib.pyplot as plt
+    
+    axes = plt.gca()
+    axes.set_xlim([350,2500])
+    axes.set_ylim([0,1])
+    y = np.rot90(vectors, 3)
+    plt.plot(wvl, y)
+    plt.show()
+
+plot_spectra()
+
+#jp.shutdownJVM()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
