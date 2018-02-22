@@ -89,7 +89,7 @@ def plot_spectra():
 
 plot_spectra()
 
-#jp.shutdownJVM()
+jp.shutdownJVM()
 
 
 
