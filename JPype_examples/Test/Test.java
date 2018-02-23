@@ -1,4 +1,4 @@
-package testpkg;
+package Test;
 
 public class Test {
   private String msg;
