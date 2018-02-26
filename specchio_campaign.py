@@ -45,3 +45,10 @@ c.setId(c_id)  # Store the campaign ID in the campaign object.
 hierarchy_id = specchio_client.getSubHierarchyId(c, 'Pasture', 0)
 # 0 argument specifices the hierarchy has not parent.
 
+# LOADING THE SPECTRAL CSV AND METADATA CSV FILES INTO MATLAB
+filepath = '/blah/foo'
+filename = 'spectra.csv'
+
+with open(filepath + filename, 'rb') as csvfile:
+# Pandas or Numpy?
+wavelens_and_spectra = csv.reader
