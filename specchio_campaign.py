@@ -32,6 +32,7 @@ descriptor_list = client_factory.getAllServerDescriptors()
 specchio_client = client_factory.createClient(descriptor_list.get(0))
 
 # Create a new campaign programatically
+# DV: Note this by default inserts into the localhost db.
 c = sptypes.SpecchioCampaign()
 c.setName('Test (Python)')
 
@@ -39,3 +40,8 @@ c_id = specchio_client.insertCampaign(c)
 c.setId(c_id)  # Store the campaign ID in the campaign object.
 
 # The id of the new campaign is stored in the c_id variable
+
+# Creating a metadata hierarchy
+hierarchy_id = specchio_client.getSubHierarchyId(c, 'Pasture', 0)
+# 0 argument specifices the hierarchy has not parent.
+
