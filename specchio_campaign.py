@@ -33,6 +33,7 @@ specchio_client = client_factory.createClient(descriptor_list.get(0))
 
 # Create a new campaign programatically
 # DV: Note this by default inserts into the localhost db.
+
 c = sptypes.SpecchioCampaign()
 c.setName('Test (Python)')
 
