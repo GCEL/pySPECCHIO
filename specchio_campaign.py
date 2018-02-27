@@ -53,5 +53,49 @@ filename = 'spectra.csv'
 
 with open(filepath + filename, 'r') as csvfile:
 # Pandas or Numpy?
-    wavelens_and_spectra = np.loadtxt(csvfile)
+    wavelens_and_spectra = np.loadtxt(csvfile, delimiter=',')
     wavelengths = wavelens_and_spectra[:,1]
+    spectra = wavelens_and_spectra[:,2:]
+    
+# Reading and processing Input files.
+""" The following code generates a spectral file object fills the spectral data
+into a Java array and the Metadata into a metadata object. The spectral file
+object is then stored in the database under the campaign and hierarchy we 
+created.
+"""
+
+# Create a spectral file 
+spectra_obj = sptypes.SpectralFile
+spectra_obj.setNumberOfSpectra(size(spectra,2))
+spectra_obj.SetPath(filepath)
+spectra_obj.setFilename(filename)
+spectra_obj.setCompany('UoE')
+
+# Set the campaign and hierarchy to store in
+spectra_obj.setHierarchyId(hierarchy_id)
+spectra_obj.setCampaignId(c_id)
+
+# Create array for spectral data
+spectra_array = jp.javaArray('java.lang.Float', size(spectra,2), length(wavelengths))
+
+# Create an array for wavelengths
+java_wavelengths = jp.javaArray('java.lang.Float', size(spectra,2), length(wavelengths))
+
+for w in range(1, len(wavelengths)):
+    java_wavelengths(w) = jp.java.lang.Float(wavelengths(w))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
