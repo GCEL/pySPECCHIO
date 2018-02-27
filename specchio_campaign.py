@@ -9,6 +9,7 @@ Created on Mon Feb 26 09:54:34 2018
 import jpype as jp
 import time
 import unittest
+import numpy as np
 
 def init_jvm(jvmpath=None):
     """
@@ -47,9 +48,10 @@ hierarchy_id = specchio_client.getSubHierarchyId(c, 'Pasture', 0)
 # 0 argument specifices the hierarchy has not parent.
 
 # LOADING THE SPECTRAL CSV AND METADATA CSV FILES INTO MATLAB
-filepath = '/blah/foo'
+filepath = '/home/centos/Downloads/'
 filename = 'spectra.csv'
 
-with open(filepath + filename, 'rb') as csvfile:
+with open(filepath + filename, 'r') as csvfile:
 # Pandas or Numpy?
-wavelens_and_spectra = csv.reader
+    wavelens_and_spectra = np.loadtxt(csvfile)
+    wavelengths = wavelens_and_spectra[:,1]
