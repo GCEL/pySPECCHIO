@@ -66,7 +66,7 @@ created.
 
 # Create a spectral file 
 spectra_obj = sptypes.SpectralFile
-spectra_obj.setNumberOfSpectra(size(spectra,2))
+spectra_obj.setNumberOfSpectra(sizeof(spectra,2))
 spectra_obj.SetPath(filepath)
 spectra_obj.setFilename(filename)
 spectra_obj.setCompany('UoE')
@@ -76,13 +76,13 @@ spectra_obj.setHierarchyId(hierarchy_id)
 spectra_obj.setCampaignId(c_id)
 
 # Create array for spectral data
-spectra_array = jp.javaArray('java.lang.Float', size(spectra,2), length(wavelengths))
+spectra_array = jp.javaArray('java.lang.Float', sizeof(spectra,2), len(wavelengths))
 
 # Create an array for wavelengths
-java_wavelengths = jp.javaArray('java.lang.Float', size(spectra,2), length(wavelengths))
+java_wavelengths = jp.javaArray('java.lang.Float', sizeof(spectra,2), len(wavelengths))
 
 for w in range(1, len(wavelengths)):
-    java_wavelengths(w) = jp.java.lang.Float(wavelengths(w))
+    java_wavelengths[w] = jp.java.lang.Float(wavelengths[w])
 
 
 
