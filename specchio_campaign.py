@@ -10,7 +10,6 @@ import jpype as jp
 import time
 import unittest
 import numpy as np
-import sys
 
 def init_jvm(jvmpath=None):
     """
@@ -68,7 +67,7 @@ created.
 
 # Create a spectral file 
 #spectra_obj = spspectra_file.
-spspectra_file.setNumberOfSpectra(sys.getsizeof(spectra,2))
+spspectra_file.setNumberOfSpectra(np.size(spectra,2))
 spspectra_file.SetPath(filepath)
 spspectra_file.setFilename(filename)
 spspectra_file.setCompany('UoE')
@@ -78,10 +77,10 @@ spspectra_file.setHierarchyId(hierarchy_id)
 spspectra_file.setCampaignId(c_id)
 
 # Create array for spectral data
-spectra_array = jp.javaArray('java.lang.Float', sys.getsizeof(spectra,2), len(wavelengths))
+spectra_array = jp.javaArray('java.lang.Float', np.size(spectra,2), len(wavelengths))
 
 # Create an array for wavelengths
-java_wavelengths = jp.javaArray('java.lang.Float', sys.getsizeof(spectra,2), len(wavelengths))
+java_wavelengths = jp.javaArray('java.lang.Float', np.size(spectra,2), len(wavelengths))
 
 for w in range(1, len(wavelengths)):
     java_wavelengths[w] = jp.java.lang.Float(wavelengths[w])
