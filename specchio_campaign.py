@@ -26,7 +26,7 @@ spquery = jp.JPackage('ch').specchio.queries
 sptypes = jp.JPackage('ch').specchio.types
 spgui = jp.JPackage('ch').specchio.gui
 spreader_campaign = jp.JPackage('ch').specchio.file.reader.campaign
-spspectra_file = jp.JPackage('ch').specchio.types.SpectralFile
+spspectra_file = sptypes.SpectralFile()
 
 # Connect to server (make this into method as is often called)
 client_factory = spclient.SPECCHIOClientFactory.getInstance()
@@ -67,8 +67,8 @@ created.
 
 # Create a spectral file 
 #spectra_obj = spspectra_file.
-spspectra_file.setNumberOfSpectra(np.size(spectra,2))
-spspectra_file.SetPath(filepath)
+spspectra_file.setNumberOfSpectra(np.size(spectra,1))
+spspectra_file.setPath(filepath)
 spspectra_file.setFilename(filename)
 spspectra_file.setCompany('UoE')
 
@@ -77,10 +77,10 @@ spspectra_file.setHierarchyId(hierarchy_id)
 spspectra_file.setCampaignId(c_id)
 
 # Create array for spectral data
-spectra_array = jp.javaArray('java.lang.Float', np.size(spectra,2), len(wavelengths))
+spectra_array = jp.javaArray('java.lang.Float', np.size(spectra,1), len(wavelengths))
 
 # Create an array for wavelengths
-java_wavelengths = jp.javaArray('java.lang.Float', np.size(spectra,2), len(wavelengths))
+java_wavelengths = jp.javaArray('java.lang.Float', np.size(spectra,1), len(wavelengths))
 
 for w in range(1, len(wavelengths)):
     java_wavelengths[w] = jp.java.lang.Float(wavelengths[w])
