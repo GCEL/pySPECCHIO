@@ -77,10 +77,10 @@ spspectra_file.setHierarchyId(hierarchy_id)
 spspectra_file.setCampaignId(c_id)
 
 # Create array for spectral data
-spectra_array = jp.JArray("jp.java.lang.Float", np.size(spectra,1))(len(wavelengths))
+spectra_array = jp.JArray(jp.JFloat, np.size(spectra,1))(len(wavelengths))
 
 # Create an array for wavelengths
-java_wavelengths = jp.JArray(float, np.size(spectra,1))(len(wavelengths))
+java_wavelengths = jp.JArray(jp.JFloat, np.size(spectra,1))(len(wavelengths))
 
 for w in range(1, len(wavelengths)):
     java_wavelengths[w] = jp.java.lang.Float(wavelengths[w])
