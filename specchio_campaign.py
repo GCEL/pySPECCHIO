@@ -82,8 +82,8 @@ spectra_array = jp.JArray(jp.JFloat, np.size(spectra,1))(len(wavelengths))
 # Create an array for wavelengths
 java_wavelengths = jp.JArray(jp.JFloat, np.size(spectra,1))(len(wavelengths))
 
-for w in range(1, len(wavelengths)):
-    java_wavelengths[w] = jp.java.lang.Float(wavelengths[w])
+for w in range(0, len(wavelengths)-1):
+    java_wavelengths[w] = jp.java.lang.Float(float(wavelengths[w]))
 
 
 
