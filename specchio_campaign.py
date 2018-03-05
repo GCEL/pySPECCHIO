@@ -81,10 +81,10 @@ spectra_array = jp.JArray(jp.JFloat, np.size(spectra,1))(len(wavelengths))
 
 # Create an array for wavelengths
 # Translated from MATLAB's javaArray - not sure if this is entirely possbile...
-java_wavelengths = jp.JArray(jp.JFloat, np.size(spectra,1))(len(wavelengths))
+java_wavelengths = jp.JArray(jp.JFloat, np.size(spectra,1))(len(wavelengths), wavelengths)
 
 for w in range(0, len(wavelengths)-1):
-    java_wavelengths(w) = jp.java.lang.Float(float(wavelengths(w)))
+    java_wavelengths[w] = jp.JFloat(wavelengths[w])
 
 for i in range(0, np.size(spectra, 1)):
     pass
