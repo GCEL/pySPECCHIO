@@ -77,14 +77,50 @@ spspectra_file.setHierarchyId(hierarchy_id)
 spspectra_file.setCampaignId(c_id)
 
 # Create array for spectral data
-spectra_array = jp.JArray(jp.JFloat, np.size(spectra,1))(len(wavelengths))
+spectra_array = jp.JArray(jp.JFloat)(len(wavelengths))
 
 # Create an array for wavelengths
 # Translated from MATLAB's javaArray - not sure if this is entirely possbile...
-java_wavelengths = jp.JArray(jp.JFloat, np.size(spectra,1))(wavelengths)
+java_wavelengths = jp.JArray(jp.JFloat)(list(wavelengths))
 
-for w in range(0, len(wavelengths)-1):
-    java_wavelengths[w] = jp.JFloat(wavelengths[w])
+for i in range(0,np.size(spectra, 1)):
+    vector = spectra[:,i]
+    for w in range(0,len(wavelengths)):
+        spectra_array[i,w] = jp.java.lang.Float(vector[w])
+    
+    # Add the wavelengths
+    spspectra_file.addWvls(java_wavelengths)
+    
+    # Add filename: we add an automatic number here to make them distinct
+    fname_spectra = filename + str(i)
+    spspectra_file.addSpectrumFilename(fname_spectra)
+    
+    # Add plot number 
+    smd = sptypes.Metadata()
+    metaparam = sptypes.MetaParameter()
+    
+    mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Target ID'))
+    mp.setValue(str(metadata[i,i+1]))
+    smd.addEntry(mp)
+    
+    # Add Nitrate
+    mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Nitrate Nitorgen'))
+    mp.setValue(metadata[4,i+1])
+    smd.addEntry(mp)
+    
+    # Add Phosphorous
+    mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Phosphorous'))
+    mp.setValue(metadata[5,i+1])
+    smd.addEntry(mp)
+    
+    spspectra_file.addEavMetadata(smd)
 
-for i in range(0, np.size(spectra, 1)):
-    pass
+spspectra_file.setMeasurements(spectra_array)
+
+specchio_client.insertSpectralFile(spspectra_file)    
+
+
+
+
+
+
