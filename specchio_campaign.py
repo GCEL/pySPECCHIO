@@ -10,6 +10,7 @@ import jpype as jp
 import time
 import unittest
 import numpy as np
+import pandas as pd
 
 def init_jvm(jvmpath=None):
     """
@@ -19,6 +20,17 @@ def init_jvm(jvmpath=None):
         return
     jp.startJVM(jp.getDefaultJVMPath(), "-ea", "-Djava.class.path=/usr/local/SPECCHIO/specchio-client.jar")
 
+def read_metadata(filename):
+    """ Reads the example metadata csv file and returns a pandas dataframe"""
+    
+    # Read in the csv, transposing it because the names are actually in the 1st column
+    df = pd.read_csv(filename, header=None).transpose()
+    # Now use the transposed 1st row to create the column names
+    df.columns = df.iloc[0]
+    # Now we can drop row 1 as it is loaded as column names
+    df = df.reindex(df.index.drop(0))
+    return df
+    
 init_jvm()
 
 spclient = jp.JPackage('ch').specchio.client
@@ -57,6 +69,9 @@ with open(filepath + filename, 'r') as csvfile:
     wavelens_and_spectra = np.loadtxt(csvfile, delimiter=',')
     wavelengths = wavelens_and_spectra[:,1]
     spectra = wavelens_and_spectra[:,2:]
+    
+    # Now get the metadata
+    metadata = read_metadata("metadata.csv")
     
 # Reading and processing Input files.
 """ The following code generates a spectral file object fills the spectral data
