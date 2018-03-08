@@ -71,7 +71,7 @@ with open(filepath + filename, 'r') as csvfile:
     spectra = wavelens_and_spectra[:,2:]
     
     # Now get the metadata
-    metadata = read_metadata("metadata.csv")
+    metadata = read_metadata(filepath + "metadata.csv")
     
 # Reading and processing Input files.
 """ The following code generates a spectral file object fills the spectral data
@@ -115,17 +115,17 @@ for i in range(0,np.size(spectra, 1)):
     metaparam = sptypes.MetaParameter()
     
     mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Target ID'))
-    mp.setValue(str(metadata[i,i+1]))
+    mp.setValue(str(metadata['Plot'][i]))
     smd.addEntry(mp)
     
     # Add Nitrate
     mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Nitrate Nitorgen'))
-    mp.setValue(metadata[4,i+1])
+    mp.setValue(metadata['Nitrate Nitrogen Mg/Kg'][i])
     smd.addEntry(mp)
     
     # Add Phosphorous
     mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Phosphorous'))
-    mp.setValue(metadata[5,i+1])
+    mp.setValue(metadata['Phosphorous %'][i])
     smd.addEntry(mp)
     
     spspectra_file.addEavMetadata(smd)
