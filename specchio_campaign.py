@@ -92,7 +92,10 @@ spspectra_file.setHierarchyId(hierarchy_id)
 spspectra_file.setCampaignId(c_id)
 
 # Create array for spectral data
-spectra_array = jp.JArray(jp.JFloat)(len(wavelengths))
+java_spectra_array = jp.JArray(jp.JFloat, 2)(len(wavelengths))
+
+# A numpy temporary holding array, dims of no of spectra x no of wvls
+spectra_array = np.zeros( ( np.size(spectra,1), len(wavelengths) ) )
 
 # Create an array for wavelengths
 # Translated from MATLAB's javaArray - not sure if this is entirely possbile...
@@ -101,7 +104,8 @@ java_wavelengths = jp.JArray(jp.JFloat)(list(wavelengths))
 for i in range(0,np.size(spectra, 1)):
     vector = spectra[:,i]
     for w in range(0,len(wavelengths)):
-        spectra_array[i,w] = jp.java.lang.Float(vector[w])
+        # Perhaps create a numpy array first and then populate?
+        spectra_array[i,w] = vector[w]
     
     # Add the wavelengths
     spspectra_file.addWvls(java_wavelengths)
