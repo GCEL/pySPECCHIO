@@ -94,9 +94,6 @@ spspectra_file.setCompany('UoE')
 spspectra_file.setHierarchyId(hierarchy_id)
 spspectra_file.setCampaignId(c_id)
 
-# Create array for spectral data
-java_spectra_array = jp.JArray(jp.JFloat, 2)(len(wavelengths))
-
 # A numpy temporary holding array, dims of no of spectra x no of wvls
 spectra_array = np.zeros( ( np.size(spectra,1), len(wavelengths) ) )
 
@@ -141,7 +138,7 @@ for i in range(0,np.size(spectra, 1)):
 
 # Convert to a java array the spectra_array
 
-
+java_spectra_array = jp.JArray(jp.JFloat, 2)(spectra_array.tolist())
 spspectra_file.setMeasurements(spectra_array)
 
 specchio_client.insertSpectralFile(spspectra_file)    
