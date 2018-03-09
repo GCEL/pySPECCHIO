@@ -139,6 +139,9 @@ for i in range(0,np.size(spectra, 1)):
         
         spspectra_file.addEavMetadata(smd)
 
+# Convert to a java array the spectra_array
+
+
 spspectra_file.setMeasurements(spectra_array)
 
 specchio_client.insertSpectralFile(spspectra_file)    
