@@ -134,7 +134,7 @@ for i in range(0,np.size(spectra, 1)):
     
     # Add Phosphorous
     mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Phosphorous'))
-    mp.setValue(metadata['Phosphorous %'][i])
+    mp.setValue(metadata['Phosphorus %'][i])
     smd.addEntry(mp)
     
     spspectra_file.addEavMetadata(smd)
