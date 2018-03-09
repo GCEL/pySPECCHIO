@@ -38,7 +38,10 @@ spquery = jp.JPackage('ch').specchio.queries
 sptypes = jp.JPackage('ch').specchio.types
 spgui = jp.JPackage('ch').specchio.gui
 spreader_campaign = jp.JPackage('ch').specchio.file.reader.campaign
+
+# TODO: Call or attribute? Check API here...
 spspectra_file = sptypes.SpectralFile()
+metaparam = sptypes.MetaParameter
 
 # Connect to server (make this into method as is often called)
 client_factory = spclient.SPECCHIOClientFactory.getInstance()
@@ -108,7 +111,9 @@ for i in range(0,np.size(spectra, 1)):
         spectra_array[i,w] = vector[w]
     
     # Add the wavelengths
-    spspectra_file.addWvls(java_wavelengths)
+    # This seems horrendously hacky...
+    # TODO: Also it would make the first declartion redundant now? (Revisit later)
+    spspectra_file.addWvls([jp.java.lang.Float(x) for x in java_wavelengths])
     
     # Add filename: we add an automatic number here to make them distinct
     fname_spectra = filename + str(i)
@@ -116,7 +121,7 @@ for i in range(0,np.size(spectra, 1)):
     
     # Add plot number 
     smd = sptypes.Metadata()
-    metaparam = sptypes.MetaParameter()
+    
     
     mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Target ID'))
     mp.setValue(str(metadata['Plot'][i]))
