@@ -122,22 +122,22 @@ for i in range(0,np.size(spectra, 1)):
     # Add plot number 
     smd = sptypes.Metadata()
     
-    
-    mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Target ID'))
-    mp.setValue(str(metadata['Plot'][i]))
-    smd.addEntry(mp)
-    
-    # Add Nitrate
-    mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Nitrate Nitorgen'))
-    mp.setValue(metadata['Nitrate Nitrogen Mg/Kg'][i])
-    smd.addEntry(mp)
-    
-    # Add Phosphorous
-    mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Phosphorous'))
-    mp.setValue(metadata['Phosphorus %'][i])
-    smd.addEntry(mp)
-    
-    spspectra_file.addEavMetadata(smd)
+    if i > 0:   
+        mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Target ID'))
+        mp.setValue(str(metadata['Plot'][i]))
+        smd.addEntry(mp)
+        
+        # Add Nitrate
+        mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Nitrate Nitrogen'))
+        mp.setValue(metadata['Nitrate Nitrogen Mg/Kg'][i])
+        smd.addEntry(mp)
+        
+        # Add Phosphorous
+        mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Phosphorus'))
+        mp.setValue(metadata['Phosphorus %'][i])
+        smd.addEntry(mp)
+        
+        spspectra_file.addEavMetadata(smd)
 
 spspectra_file.setMeasurements(spectra_array)
 
