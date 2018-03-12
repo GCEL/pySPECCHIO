@@ -138,8 +138,13 @@ for i in range(0,np.size(spectra, 1)):
 
 # Convert to a java array the spectra_array
 
-java_spectra_array = jp.JArray(jp.JFloat, 2)(spectra_array.tolist())
-spspectra_file.setMeasurements(spectra_array)
+#java_spectra_array = jp.JArray(float, 2)(spectra_array.tolist())
+# does not work when passed to java function expecting float[][]
+
+spectra_list = spectra_array.tolist()
+javafloat_spectra_array = [[jp.java.lang.Float(j) for j in i] for i in spectra_list]
+
+spspectra_file.setMeasurements(javafloat_spectra_array)
 
 specchio_client.insertSpectralFile(spspectra_file)    
 
