@@ -52,7 +52,7 @@ specchio_client = client_factory.createClient(descriptor_list.get(0))
 # DV: Note this by default inserts into the localhost db.
 
 c = sptypes.SpecchioCampaign()
-c.setName('Test (Python)')
+c.setName('Python Uploader Monday')
 
 c_id = specchio_client.insertCampaign(c)
 c.setId(c_id)  # Store the campaign ID in the campaign object.
@@ -137,7 +137,6 @@ for i in range(0,np.size(spectra, 1)):
         spspectra_file.addEavMetadata(smd)
 
 # Convert to a java array the spectra_array
-
 #java_spectra_array = jp.JArray(float, 2)(spectra_array.tolist())
 # does not work when passed to java function expecting float[][]
 
