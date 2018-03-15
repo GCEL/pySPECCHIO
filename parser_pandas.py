@@ -26,7 +26,7 @@ def extract_dataframes():
                 filefullname = os.path.join(dirname, fname)
                 #print(filefullname)
                 dictname = os.path.splitext(os.path.basename(fname))[0]
-                dataframes[dictname] = pd.read_excel(filefullname)
+                dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
     return dataframes
 
     
