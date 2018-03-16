@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
-
-This is a temporary script file.
+This submodule will parse the raw excel/csv/text files into pandas dataframes
+first. Before another module will extract from the dataframes and load into
+the database
 """
 
 import os
@@ -10,25 +10,34 @@ import re
 import unittest
 import pandas as pd
 
-datadir = "/home/dvalters/Projects/SPECCHIO/DATA/"
+DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
 
 dataframes = {}
-csvs = []
 
-
+def file_and_dict_name(dirname, fname):
+    filefullname = os.path.join(dirname, fname)
+    dictname = os.path.splitext(os.path.basename(fname))[0]
+    return (filefullname, dictname)
 
 def extract_dataframes():
-    for (dirname, subdirs, files) in os.walk(datadir):
+    for (dirname, subdirs, files) in os.walk(DATADIR):
         #print('[' + dirname + ']')
         for fname in files:
             # Only match "xlsx" files, exclude recovery/backup files
             if re.match("^(?![~$]).*.xlsx$", fname):
-                filefullname = os.path.join(dirname, fname)
-                #print(filefullname)
-                dictname = os.path.splitext(os.path.basename(fname))[0]
-                dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
+                extract_excel_format(*file_and_dict_name(dirname, fname))
+
     return dataframes
 
+
+def extract_excel_format(filefullname, dictname):
+    dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
+    
+def extract_csv_format():
+    pass
+
+def extract_PRN_format():
+    """This is the raw text file format that comes of the machine"""
     
 class TestParser(unittest.TestCase):
     
