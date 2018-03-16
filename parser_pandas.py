@@ -25,9 +25,11 @@ def extract_dataframes():
         for fname in files:
             # Only match "xlsx" files, exclude recovery/backup files
             if re.match("^(?![~$]).*.xlsx$", fname):
+            # Could be try blocks here:
                 extract_excel_format(*file_and_dict_name(dirname, fname))
+            if re.match("^(?![~$]).*.PRN$", fname):
+                extract_PRN_format(*file_and_dict_name(dirname, fname))
     return dataframes
-
 
 def extract_excel_format(filefullname, dictname):
     dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
@@ -35,8 +37,11 @@ def extract_excel_format(filefullname, dictname):
 def extract_csv_format(filefullname, dictname):
     dataframes[dictname] = pd.read_csv(filefullname, skiprows=1)
 
-def extract_PRN_format():
+def extract_PRN_format(filefullname, dictname):
     """This is the raw text file format that comes of the machine"""
+    dataframes[dictname] = pd.read_table(filefullname, header=[7], delim_whitespace=True)
+    
+    
     
 class TestParser(unittest.TestCase):
     
@@ -48,7 +53,11 @@ class TestParser(unittest.TestCase):
         # Could be the other way round I suppose...
         for bad_string in BAD_STRINGS:
             self.assertFalse(any(bad_string in key for key in dfs.keys()))
-
+    
+    def test_PRN_parsing(self):
+        filefullname = "/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/ES_F1_2017/plot_scale_data/LAI/20170714_LAI.PRN"
+        extract_PRN_format(filefullname, "TEST_PRN_dict")
+        self.assertEquals(len(dataframes['TEST_PRN_dict'].columns), 9)
 
 if __name__=='__main__':
     unittest.main()
