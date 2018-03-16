@@ -26,15 +26,14 @@ def extract_dataframes():
             # Only match "xlsx" files, exclude recovery/backup files
             if re.match("^(?![~$]).*.xlsx$", fname):
                 extract_excel_format(*file_and_dict_name(dirname, fname))
-
     return dataframes
 
 
 def extract_excel_format(filefullname, dictname):
     dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
     
-def extract_csv_format():
-    pass
+def extract_csv_format(filefullname, dictname):
+    dataframes[dictname] = pd.read_csv(filefullname, skiprows=1)
 
 def extract_PRN_format():
     """This is the raw text file format that comes of the machine"""
