@@ -40,9 +40,17 @@ def extract_csv_format(filefullname, dictname):
 def extract_PRN_format(filefullname, dictname):
     """This is the raw text file format that comes of the machine"""
     dataframes[dictname] = pd.read_table(filefullname, header=[7], delim_whitespace=True)
+
+def generate_goodPRNlines(filename):
+    with open(filename) as f:
+        for line in f:
+            
+
+class PRNdata(object):
+    """Class that defines the data in a PRN file"""
+    pass
     
-    
-    
+
 class TestParser(unittest.TestCase):
     
     def test_correct_files_parsed(self):
@@ -54,7 +62,8 @@ class TestParser(unittest.TestCase):
         for bad_string in BAD_STRINGS:
             self.assertFalse(any(bad_string in key for key in dfs.keys()))
     
-    def test_PRN_parsing(self):
+    def test_PRN_parsing_columns(self):
+        """PRN data should have nine columns if correctly ingested"""
         filefullname = "/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/ES_F1_2017/plot_scale_data/LAI/20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
         self.assertEquals(len(dataframes['TEST_PRN_dict'].columns), 9)
