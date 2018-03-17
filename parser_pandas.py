@@ -41,14 +41,23 @@ def extract_csv_format(filefullname, dictname):
 
 def extract_PRN_format(filefullname, dictname):
     """This is the raw text file format that comes of the machine"""
-    dataframes[dictname] = pd.read_table(filefullname, header=[11], delim_whitespace=True)
+    #dataframes[dictname] = pd.read_table(filefullname, header=[11], delim_whitespace=True)
+    # Build dataframe manually using the generator.
+    PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample', 'Transmitted', 'Spread',  'Incident',  'Beam Frac', 'Zenith',  'LAI'])
+    for i, line in enumerate(generate_goodPRNline(filefullname)):
+        PRN_dataframe.loc[i] = line.split()
+    dataframes[dictname] = PRN_dataframe
+        
 
 def generate_goodPRNline(filename):
+    """Generator that yields a data line from the PRN file"""
     with open(filename) as f:
         for line in f:
             if line[0].isdigit() and ':' in line:
                 yield line
-                
+
+def read_PRN_to_dataframe():
+    pass
             
 
 class PRNdata(object):
