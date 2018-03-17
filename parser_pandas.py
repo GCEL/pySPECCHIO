@@ -46,7 +46,7 @@ def extract_PRN_format(filefullname, dictname):
 def generate_goodPRNline(filename):
     with open(filename) as f:
         for line in f:
-            if line[0].isdigit():
+            if line[0].isdigit() and ':' in line:
                 yield line
                 
             
@@ -54,30 +54,33 @@ def generate_goodPRNline(filename):
 class PRNdata(object):
     """Class that defines the data in a PRN file"""
     pass
-    
+
 
 class TestParser(unittest.TestCase):
     
     def test_correct_files_parsed(self):
 
         BAD_STRINGS = ['$', '~', 'csv', 'xls']
-        
+
         dfs = extract_dataframes()
         # Could be the other way round I suppose...
         for bad_string in BAD_STRINGS:
             self.assertFalse(any(bad_string in key for key in dfs.keys()))
-    
+
     def test_PRN_parsing_columns(self):
         """PRN data should have nine columns if correctly ingested"""
         filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
         self.assertEquals(len(dataframes['TEST_PRN_dict'].columns), 9)
-    
+
     def test_generate_PRN_lines(self):
         """Test that we can strip and print the PRN text file lines """
         reader = generate_goodPRNline(TEST_PRN_DIR + "20170714_LAI.PRN")
         while True:
-            print(next(reader))
+            try:
+                print(next(reader))
+            except StopIteration:
+                break
 
 if __name__=='__main__':
     unittest.main()
