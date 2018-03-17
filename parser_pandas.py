@@ -12,6 +12,8 @@ import pandas as pd
 
 DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
 
+TEST_PRN_DIR = "/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/ES_F1_2017/plot_scale_data/LAI/"
+
 dataframes = {}
 
 def file_and_dict_name(dirname, fname):
@@ -39,11 +41,14 @@ def extract_csv_format(filefullname, dictname):
 
 def extract_PRN_format(filefullname, dictname):
     """This is the raw text file format that comes of the machine"""
-    dataframes[dictname] = pd.read_table(filefullname, header=[7], delim_whitespace=True)
+    dataframes[dictname] = pd.read_table(filefullname, header=[11], delim_whitespace=True)
 
-def generate_goodPRNlines(filename):
+def generate_goodPRNline(filename):
     with open(filename) as f:
         for line in f:
+            if line[0].isdigit():
+                yield line
+                
             
 
 class PRNdata(object):
@@ -64,9 +69,15 @@ class TestParser(unittest.TestCase):
     
     def test_PRN_parsing_columns(self):
         """PRN data should have nine columns if correctly ingested"""
-        filefullname = "/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/ES_F1_2017/plot_scale_data/LAI/20170714_LAI.PRN"
+        filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
         self.assertEquals(len(dataframes['TEST_PRN_dict'].columns), 9)
+    
+    def test_generate_PRN_lines(self):
+        """Test that we can strip and print the PRN text file lines """
+        reader = generate_goodPRNline(TEST_PRN_DIR + "20170714_LAI.PRN")
+        while True:
+            print(next(reader))
 
 if __name__=='__main__':
     unittest.main()
