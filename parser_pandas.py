@@ -35,7 +35,8 @@ def extract_dataframes():
                 try:
                     extract_excel_format(*file_and_dict_name(dirname, fname))
                 except ImportError:
-                    print("You must have the xlrd python module installed...Skipping " + fname)
+                    print("You must have the xlrd python module installed"
+                          "...Skipping " + fname)
             if re.match("^(?![~$]).*.PRN$", fname):
                 extract_PRN_format(*file_and_dict_name(dirname, fname))
     return dataframes
