@@ -10,7 +10,8 @@ import re
 import unittest
 import pandas as pd
 
-DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
+# DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
+DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
 
 TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
                 "ES_F1_2017/plot_scale_data/LAI/")
@@ -31,7 +32,10 @@ def extract_dataframes():
             # Only match "xlsx" files, exclude recovery/backup files
             if re.match("^(?![~$]).*.xlsx$", fname):
                 # Could be try blocks here:
-                extract_excel_format(*file_and_dict_name(dirname, fname))
+                try:
+                    extract_excel_format(*file_and_dict_name(dirname, fname))
+                except ImportError:
+                    print("You must have the xlrd python module installed...Skipping " + fname)
             if re.match("^(?![~$]).*.PRN$", fname):
                 extract_PRN_format(*file_and_dict_name(dirname, fname))
     return dataframes
@@ -101,10 +105,8 @@ class TestParser(unittest.TestCase):
         """Test a line has been correctly parsed"""
         filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
-        
+
         df_line = dataframes['TEST_PRN_dict'].loc[0]
-        
-        
 
     def test_generate_PRN_lines(self):
         """Test that we can strip and print the PRN text file lines.
