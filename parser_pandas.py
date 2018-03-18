@@ -12,42 +12,49 @@ import pandas as pd
 
 DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
 
-TEST_PRN_DIR = "/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/ES_F1_2017/plot_scale_data/LAI/"
+TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
+                "ES_F1_2017/plot_scale_data/LAI/")
 
 dataframes = {}
+
 
 def file_and_dict_name(dirname, fname):
     filefullname = os.path.join(dirname, fname)
     dictname = os.path.splitext(os.path.basename(fname))[0]
     return (filefullname, dictname)
 
+
 def extract_dataframes():
     for (dirname, subdirs, files) in os.walk(DATADIR):
-        #print('[' + dirname + ']')
+        # print('[' + dirname + ']')
         for fname in files:
             # Only match "xlsx" files, exclude recovery/backup files
             if re.match("^(?![~$]).*.xlsx$", fname):
-            # Could be try blocks here:
+                # Could be try blocks here:
                 extract_excel_format(*file_and_dict_name(dirname, fname))
             if re.match("^(?![~$]).*.PRN$", fname):
                 extract_PRN_format(*file_and_dict_name(dirname, fname))
     return dataframes
 
+
 def extract_excel_format(filefullname, dictname):
     dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
-    
+
+
 def extract_csv_format(filefullname, dictname):
     dataframes[dictname] = pd.read_csv(filefullname, skiprows=1)
 
+
 def extract_PRN_format(filefullname, dictname):
     """This is the raw text file format that comes of the machine"""
-    #dataframes[dictname] = pd.read_table(filefullname, header=[11], delim_whitespace=True)
     # Build dataframe manually using the generator.
-    PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample', 'Transmitted', 'Spread',  'Incident',  'Beam Frac', 'Zenith',  'LAI'])
+    PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample',
+                                          'Transmitted', 'Spread',  'Incident',
+                                          'Beam Frac', 'Zenith',  'LAI'])
     for i, line in enumerate(generate_goodPRNline(filefullname)):
         PRN_dataframe.loc[i] = line.split()
     dataframes[dictname] = PRN_dataframe
-        
+
 
 def generate_goodPRNline(filename):
     """Generator that yields a data line from the PRN file"""
@@ -56,9 +63,10 @@ def generate_goodPRNline(filename):
             if line[0].isdigit() and ':' in line:
                 yield line
 
+
 def read_PRN_to_dataframe():
     pass
-            
+
 
 class PRNdata(object):
     """Class that defines the data in a PRN file"""
@@ -66,7 +74,7 @@ class PRNdata(object):
 
 
 class TestParser(unittest.TestCase):
-    
+
     def test_correct_files_parsed(self):
 
         BAD_STRINGS = ['$', '~', 'csv', 'xls']
@@ -91,5 +99,5 @@ class TestParser(unittest.TestCase):
             except StopIteration:
                 break
 
-if __name__=='__main__':
+if __name__ == '__main__':
     unittest.main()
