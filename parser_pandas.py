@@ -53,6 +53,7 @@ def extract_PRN_format(filefullname, dictname):
                                           'Beam Frac', 'Zenith',  'LAI'])
     for i, line in enumerate(generate_goodPRNline(filefullname)):
         PRN_dataframe.loc[i] = line.split()
+    PRN_dataframe = PRN_dataframe.apply(pd.to_numeric, errors='ignore')
     dataframes[dictname] = PRN_dataframe
 
 
@@ -90,12 +91,28 @@ class TestParser(unittest.TestCase):
         extract_PRN_format(filefullname, "TEST_PRN_dict")
         self.assertEquals(len(dataframes['TEST_PRN_dict'].columns), 9)
 
+    def test_PRN_parsing_rows(self):
+        """PRN data should have 261 rows if correctly ingested"""
+        filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
+        extract_PRN_format(filefullname, "TEST_PRN_dict")
+        self.assertEquals(len(dataframes['TEST_PRN_dict']), 261)
+
+    def test_PRN_line(self):
+        """Test a line has been correctly parsed"""
+        filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
+        extract_PRN_format(filefullname, "TEST_PRN_dict")
+        
+        df_line = dataframes['TEST_PRN_dict'].loc[0]
+        
+        
+
     def test_generate_PRN_lines(self):
-        """Test that we can strip and print the PRN text file lines """
+        """Test that we can strip and print the PRN text file lines.
+        Print statement around next() is removed now."""
         reader = generate_goodPRNline(TEST_PRN_DIR + "20170714_LAI.PRN")
         while True:
             try:
-                print(next(reader))
+                next(reader)
             except StopIteration:
                 break
 
