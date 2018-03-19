@@ -10,10 +10,13 @@ import re
 import unittest
 import pandas as pd
 
-# DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
-DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
 
-TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
+# DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
+DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
+
+# TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
+#                "ES_F1_2017/plot_scale_data/LAI/")
+TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
                 "ES_F1_2017/plot_scale_data/LAI/")
 
 dataframes = {}
@@ -94,13 +97,13 @@ class TestParser(unittest.TestCase):
         """PRN data should have nine columns if correctly ingested"""
         filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
-        self.assertEquals(len(dataframes['TEST_PRN_dict'].columns), 9)
+        self.assertEqual(len(dataframes['TEST_PRN_dict'].columns), 9)
 
     def test_PRN_parsing_rows(self):
         """PRN data should have 261 rows if correctly ingested"""
         filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
-        self.assertEquals(len(dataframes['TEST_PRN_dict']), 261)
+        self.assertEqual(len(dataframes['TEST_PRN_dict']), 261)
 
     def test_PRN_line(self):
         """Test a line has been correctly parsed"""
