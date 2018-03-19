@@ -1,0 +1,4 @@
+language: python
+
+# Test the parser works
+python parser_pandas.py
