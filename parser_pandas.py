@@ -67,9 +67,10 @@ def extract_csv_format(filefullname, dictname):
 
 def extract_PRN_format(filefullname, dictname):
     """This is the raw text file format that comes of the machine"""
-    if dictname in dataframes:
+    if dictname != "TEST_PRN_dict" and dictname in dataframes:
         # Perhaps log as well if duplicate
         warnings.warn("always", UserWarning)
+        print(dictname)
     else:
         # Build dataframe manually using the generator.
         PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample',
