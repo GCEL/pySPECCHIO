@@ -28,7 +28,11 @@ SOILS_SUBTABLES = ('Moisture', 'ResinExtracts', 'pH', 'NitrateAmmonia')
 
 def file_and_dict_name(dirname, fname):
     filefullname = os.path.join(dirname, fname)
-    dictname = os.path.splitext(os.path.basename(fname))[0]
+    # Get a list of the subdirs, then get the field name folder
+    site_code = os.path.relpath(dirname).split(os.path.sep)[3]
+    # Take off the year bit, as it is also in the filename later
+    site_code = site_code[:-4]
+    dictname = site_code + os.path.splitext(os.path.basename(fname))[0]
     return (filefullname, dictname)
 
 
