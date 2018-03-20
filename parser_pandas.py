@@ -8,18 +8,22 @@ the database
 import os
 import re
 import unittest
+import warnings
 import pandas as pd
 
 
-# DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
-DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
+DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
+#DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
 
-# TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
-#                "ES_F1_2017/plot_scale_data/LAI/")
-TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
+TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
                 "ES_F1_2017/plot_scale_data/LAI/")
+#TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
+#                "ES_F1_2017/plot_scale_data/LAI/")
 
 dataframes = {}
+
+# Names of soil sheets in the Soils directory
+SOILS_SUBTABLES = ('Moisture', 'ResinExtracts', 'pH', 'NitrateAmmonia')
 
 
 def file_and_dict_name(dirname, fname):
@@ -46,7 +50,11 @@ def extract_dataframes():
 
 
 def extract_excel_format(filefullname, dictname):
-    dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
+    if dictname in dataframes:
+        # Perhaps log as well if duplicate
+        warnings.warn("always", UserWarning)
+    else:
+        dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
 
 
 def extract_csv_format(filefullname, dictname):
