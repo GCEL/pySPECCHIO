@@ -58,19 +58,28 @@ def extract_excel_format(filefullname, dictname):
 
 
 def extract_csv_format(filefullname, dictname):
-    dataframes[dictname] = pd.read_csv(filefullname, skiprows=1)
+    if dictname in dataframes:
+        # Perhaps log as well if duplicate
+        warnings.warn("always", UserWarning)
+    else:
+        dataframes[dictname] = pd.read_csv(filefullname, skiprows=1)
 
 
 def extract_PRN_format(filefullname, dictname):
     """This is the raw text file format that comes of the machine"""
-    # Build dataframe manually using the generator.
-    PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample',
-                                          'Transmitted', 'Spread',  'Incident',
-                                          'Beam Frac', 'Zenith',  'LAI'])
-    for i, line in enumerate(generate_goodPRNline(filefullname)):
-        PRN_dataframe.loc[i] = line.split()
-    PRN_dataframe = PRN_dataframe.apply(pd.to_numeric, errors='ignore')
-    dataframes[dictname] = PRN_dataframe
+    if dictname in dataframes:
+        # Perhaps log as well if duplicate
+        warnings.warn("always", UserWarning)
+    else:
+        # Build dataframe manually using the generator.
+        PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample',
+                                              'Transmitted', 'Spread',
+                                              'Incident',
+                                              'Beam Frac', 'Zenith',  'LAI'])
+        for i, line in enumerate(generate_goodPRNline(filefullname)):
+            PRN_dataframe.loc[i] = line.split()
+        PRN_dataframe = PRN_dataframe.apply(pd.to_numeric, errors='ignore')
+        dataframes[dictname] = PRN_dataframe
 
 
 def generate_goodPRNline(filename):
