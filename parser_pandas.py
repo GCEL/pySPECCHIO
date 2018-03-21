@@ -8,23 +8,31 @@ the database
 import os
 import re
 import unittest
+import warnings
 import pandas as pd
 
 
-# DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
-DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
+DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
+#DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
 
-# TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
-#                "ES_F1_2017/plot_scale_data/LAI/")
-TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
+TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
                 "ES_F1_2017/plot_scale_data/LAI/")
+#TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
+#                "ES_F1_2017/plot_scale_data/LAI/")
 
 dataframes = {}
+
+# Names of soil sheets in the Soils directory
+SOILS_SUBTABLES = ('Moisture', 'ResinExtracts', 'pH', 'NitrateAmmonia')
 
 
 def file_and_dict_name(dirname, fname):
     filefullname = os.path.join(dirname, fname)
-    dictname = os.path.splitext(os.path.basename(fname))[0]
+    # Get a list of the subdirs, then get the field name folder
+    site_code = os.path.relpath(dirname).split(os.path.sep)[3]
+    # Take off the year bit, as it is also in the filename later
+    site_code = site_code[:-4]
+    dictname = site_code + os.path.splitext(os.path.basename(fname))[0]
     return (filefullname, dictname)
 
 
@@ -46,6 +54,7 @@ def extract_dataframes():
 
 
 def extract_excel_format(filefullname, dictname):
+<<<<<<< HEAD
     dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
     if 'Fluorescence' in dictname:
         upper_header = pd.MultiIndex.from_product([['Sample1', 'Sample2', 
@@ -53,21 +62,38 @@ def extract_excel_format(filefullname, dictname):
         ['Fo', 'Fv', 'Fm', 'Fv/Fm', 'Fv/Fo']])
         new_header = dataframes[dictname].columns[0:3] + upper_header
         dataframes[dictname].columns = new_header
+=======
+    if dictname in dataframes:
+        # Perhaps log as well if duplicate
+        warnings.warn("always", UserWarning)
+    else:
+        dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
+
+>>>>>>> 2d8878fc2188bab6147b304543d45ba54453f9db
 
 def extract_csv_format(filefullname, dictname):
-    dataframes[dictname] = pd.read_csv(filefullname, skiprows=1)
+    if dictname in dataframes:
+        # Perhaps log as well if duplicate
+        warnings.warn("always", UserWarning)
+    else:
+        dataframes[dictname] = pd.read_csv(filefullname, skiprows=1)
 
 
 def extract_PRN_format(filefullname, dictname):
     """This is the raw text file format that comes of the machine"""
-    # Build dataframe manually using the generator.
-    PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample',
-                                          'Transmitted', 'Spread',  'Incident',
-                                          'Beam Frac', 'Zenith',  'LAI'])
-    for i, line in enumerate(generate_goodPRNline(filefullname)):
-        PRN_dataframe.loc[i] = line.split()
-    PRN_dataframe = PRN_dataframe.apply(pd.to_numeric, errors='ignore')
-    dataframes[dictname] = PRN_dataframe
+    if dictname != "TEST_PRN_dict" and dictname in dataframes:
+        # Perhaps log as well if duplicate
+        warnings.warn("always", UserWarning)
+    else:
+        # Build dataframe manually using the generator.
+        PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample',
+                                              'Transmitted', 'Spread',
+                                              'Incident',
+                                              'Beam Frac', 'Zenith',  'LAI'])
+        for i, line in enumerate(generate_goodPRNline(filefullname)):
+            PRN_dataframe.loc[i] = line.split()
+        PRN_dataframe = PRN_dataframe.apply(pd.to_numeric, errors='ignore')
+        dataframes[dictname] = PRN_dataframe
 
 
 def generate_goodPRNline(filename):
@@ -77,6 +103,8 @@ def generate_goodPRNline(filename):
             if line[0].isdigit() and ':' in line:
                 yield line
 
+
+def extract_PRN_header_info():
 
 def read_PRN_to_dataframe():
     pass
