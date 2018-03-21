@@ -54,7 +54,6 @@ def extract_dataframes():
 
 
 def extract_excel_format(filefullname, dictname):
-<<<<<<< HEAD
     dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
     if 'Fluorescence' in dictname:
         upper_header = pd.MultiIndex.from_product([['Sample1', 'Sample2', 
@@ -62,14 +61,12 @@ def extract_excel_format(filefullname, dictname):
         ['Fo', 'Fv', 'Fm', 'Fv/Fm', 'Fv/Fo']])
         new_header = dataframes[dictname].columns[0:3] + upper_header
         dataframes[dictname].columns = new_header
-=======
     if dictname in dataframes:
         # Perhaps log as well if duplicate
         warnings.warn("always", UserWarning)
     else:
         dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
 
->>>>>>> 2d8878fc2188bab6147b304543d45ba54453f9db
 
 def extract_csv_format(filefullname, dictname):
     if dictname in dataframes:
