@@ -74,7 +74,6 @@ def extract_PRN_format(filefullname, dictname):
     if dictname != "TEST_PRN_dict" and dictname in dataframes:
         # Perhaps log as well if duplicate
         warnings.warn("always", UserWarning)
-        print(dictname)
     else:
         # Build dataframe manually using the generator.
         PRN_dataframe = pd.DataFrame(columns=['Time', 'Plot', 'Sample',
@@ -94,6 +93,8 @@ def generate_goodPRNline(filename):
             if line[0].isdigit() and ':' in line:
                 yield line
 
+
+def extract_PRN_header_info():
 
 def read_PRN_to_dataframe():
     pass
