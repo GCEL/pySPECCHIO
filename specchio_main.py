@@ -15,7 +15,6 @@ database
 import parser_pandas as parse
 import specchio_db_interface as specchio
 
-
 def test_upload_sample_data():
     specchio.specchio_uploader_test()
 
@@ -27,10 +26,17 @@ def check_data():
     """Check for new data in the data dir"""
     # Could invlove a database query as well?
     # Don't waste time overwriting exsiting data
-    pass
+    return True
 
-if __name__ == "__main__":
-    if check_data():
-        print("New data found...uploading to SPECCHIO database")
-        test_upload_sample_data()
-        print("Test done.")
+# parse the data from the raw data files, converts to pandas dataframe
+data = parse.extract_dataframes()
+
+# Upload the dataframe to the database
+specchio.specchio_uploader_test()    # Test function
+specchio.upload_dataframe(data)     
+
+#if __name__ == "__main__":
+#    if check_data():
+#        print("new data found...uploading to specchio database")
+#        test_upload_sample_data()
+#        print("test done.")

@@ -33,6 +33,14 @@ def read_metadata(filename):
     
 init_jvm()
 
+def upload_dataframe(dataframe):
+    """Uploads a pandas dataframe to SPECCHIO"""
+    raise NotImplementedError
+    """Convert the below function accept a dartaframe and extract the 
+    relevant spectra to be uploaded. This must invlve converting
+    the pandas dartaframe columns to various java array types before they can 
+    be uploaded."""
+
 def specchio_uploader_test():
     spclient = jp.JPackage('ch').specchio.client
     spquery = jp.JPackage('ch').specchio.queries
