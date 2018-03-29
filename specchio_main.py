@@ -16,6 +16,9 @@ import parser_pandas as parse
 import specchio_db_interface as specchio
 
 
+def test_upload_sample_data():
+    specchio.specchio_uploader_test()
+
 def upload_new_data():
     """Checks the data dir for newly added data and uploads it to specchio."""
     pass
@@ -26,4 +29,8 @@ def check_data():
     # Don't waste time overwriting exsiting data
     pass
 
-
+if __name__ == "__main__":
+    if check_data():
+        print("New data found...uploading to SPECCHIO database")
+        test_upload_sample_data()
+        print("Test done.")
