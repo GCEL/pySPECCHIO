@@ -20,6 +20,8 @@ TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
 #TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
 #                "ES_F1_2017/plot_scale_data/LAI/")
 
+
+
 dataframes = {}
 
 # Names of soil sheets in the Soils directory
@@ -102,6 +104,7 @@ def generate_goodPRNline(filename):
 
 
 def extract_PRN_header_info():
+    pass
 
 def read_PRN_to_dataframe():
     pass
