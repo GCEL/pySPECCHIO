@@ -12,34 +12,49 @@ import unittest
 import numpy as np
 import pandas as pd
 
-def init_jvm(jvmpath=None):
-    """
-    Checks first to see if JVM is already running.
-    """
-    if jp.isJVMStarted():
-        return
-    jp.startJVM(jp.getDefaultJVMPath(), "-ea", "-Djava.class.path=/usr/local/SPECCHIO/specchio-client.jar")
+
+spclient = jp.JPackage('ch').specchio.client
+spquery = jp.JPackage('ch').specchio.queries
+sptypes = jp.JPackage('ch').specchio.types
+spgui = jp.JPackage('ch').specchio.gui
+spreader_campaign = jp.JPackage('ch').specchio.file.reader.campaign
+
+# TODO: Call or attribute? Check API here...  
+metaparam = sptypes.MetaParameter
+
+class SpecchioClient(object):
+    """Specchio db client in Python object form"""
+    pass
+
+class Campaign(object):
+    """Object for storing an instance of a campaign"""
+    def __init__(self, campaign_name):
+        pass
 
 class specchioDBinterface(object):
     """Object to manage interations with the SPECCHIO db and handle uplodas 
     from pandas dataframes"""
 
-        
-    init_jvm()
-
-    spclient = jp.JPackage('ch').specchio.client
-    spquery = jp.JPackage('ch').specchio.queries
-    sptypes = jp.JPackage('ch').specchio.types
-    spgui = jp.JPackage('ch').specchio.gui
-    spreader_campaign = jp.JPackage('ch').specchio.file.reader.campaign
-    
-    # TODO: Call or attribute? Check API here...
-    
-    metaparam = sptypes.MetaParameter
-    
-    def __init__(self):
+    def __init__(self, campaign_name):
         self.init_jvm()
-    
+        self.campaign_name = campaign_name
+        client_factory = spclient.SPECCHIOClientFactory.getInstance()
+        descriptor_list = client_factory.getAllServerDescriptors()
+        self.specchio_client = client_factory.createClient(descriptor_list.get(0))
+        
+        self.campaign = sptypes.SpecchioCampaign()
+        self.campaign.setName(self.campaign_name)
+        self.c_id = self.specchio_client.insertCampaign(self.campaign)
+        self.campaign.setId(self.c_id)  # Store the campaign ID in the campaign object.
+
+    def init_jvm(jvmpath=None):
+        """
+        Checks first to see if JVM is already running.
+        """
+        if jp.isJVMStarted():
+            return
+        jp.startJVM(jp.getDefaultJVMPath(), "-ea", "-Djava.class.path=/usr/local/SPECCHIO/specchio-client.jar")
+
     def read_metadata(self, filename):
         """ Reads the example metadata csv file and returns a pandas dataframe"""
         # Read in the csv, transposing it because the names are actually in the 1st column
@@ -58,31 +73,16 @@ class specchioDBinterface(object):
         the pandas dartaframe columns to various java array types before they can 
         be uploaded."""
     
-    @classmethod
     def specchio_uploader_test(self):
         
         # Create a spectra file object
-        spspectra_file = self.sptypes.SpectralFile()
+        spspectra_file = sptypes.SpectralFile()
 
-        
-        # Connect to server (make this into method as is often called)
-        client_factory = self.spclient.SPECCHIOClientFactory.getInstance()
-        descriptor_list = client_factory.getAllServerDescriptors()
-        specchio_client = client_factory.createClient(descriptor_list.get(0))
-        
-        # Create a new campaign programatically
-        # DV: Note this by default inserts into the localhost db.
-        
-        c = self.sptypes.SpecchioCampaign()
-        c.setName('Python Uploader Monday')
-        
-        c_id = specchio_client.insertCampaign(c)
-        c.setId(c_id)  # Store the campaign ID in the campaign object.
-        
-        # The id of the new campaign is stored in the c_id variable
+        #self.connect_to_server(self)
+        #self.init_campaign(self, "Uploader test Tues")
         
         # Creating a metadata hierarchy
-        hierarchy_id = specchio_client.getSubHierarchyId(c, 'Pasture', 0)
+        hierarchy_id = self.specchio_client.getSubHierarchyId(self.campaign, 'Pasture', 0)
         # 0 argument specifices the hierarchy has not parent.
         
         # LOADING THE SPECTRAL CSV AND METADATA CSV FILES INTO MATLAB
@@ -96,7 +96,7 @@ class specchioDBinterface(object):
             spectra = wavelens_and_spectra[:,2:]
             
             # Now get the metadata
-            metadata = self.read_metadata(self, filepath + "metadata.csv")
+            metadata = self.read_metadata(filepath + "metadata.csv")
             
         # Reading and processing Input files.
         """ The following code generates a spectral file object fills the spectral data
@@ -114,7 +114,7 @@ class specchioDBinterface(object):
         
         # Set the campaign and hierarchy to store in
         spspectra_file.setHierarchyId(hierarchy_id)
-        spspectra_file.setCampaignId(c_id)
+        spspectra_file.setCampaignId(self.c_id)
         
         # A numpy temporary holding array, dims of no of spectra x no of wvls
         spectra_array = np.zeros( ( np.size(spectra,1), len(wavelengths) ) )
@@ -139,20 +139,20 @@ class specchioDBinterface(object):
             spspectra_file.addSpectrumFilename(fname_spectra)
             
             # Add plot number 
-            smd = self.sptypes.Metadata()
+            smd = sptypes.Metadata()
             
             if i > 0:   
-                mp = self.metaparam.newInstance(specchio_client.getAttributesNameHash().get('Target ID'))
+                mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Target ID'))
                 mp.setValue(str(metadata['Plot'][i]))
                 smd.addEntry(mp)
                 
                 # Add Nitrate
-                mp = self.metaparam.newInstance(specchio_client.getAttributesNameHash().get('Nitrate Nitrogen'))
+                mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Nitrate Nitrogen'))
                 mp.setValue(metadata['Nitrate Nitrogen Mg/Kg'][i])
                 smd.addEntry(mp)
                 
                 # Add Phosphorous
-                mp = self.metaparam.newInstance(specchio_client.getAttributesNameHash().get('Phosphorus'))
+                mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Phosphorus'))
                 mp.setValue(metadata['Phosphorus %'][i])
                 smd.addEntry(mp)
                 
@@ -167,10 +167,11 @@ class specchioDBinterface(object):
         
         spspectra_file.setMeasurements(javafloat_spectra_array)
         
-        specchio_client.insertSpectralFile(spspectra_file)    
+        self.specchio_client.insertSpectralFile(spspectra_file)    
 
 if __name__ == "__main__":
-    specchioDBinterface.specchio_uploader_test()
+    db_interface = specchioDBinterface("Python test campaign")
+    db_interface.specchio_uploader_test()
 
 
 
