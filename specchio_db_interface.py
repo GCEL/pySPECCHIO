@@ -33,6 +33,10 @@ class specchioDBinterface(object):
     spgui = jp.JPackage('ch').specchio.gui
     spreader_campaign = jp.JPackage('ch').specchio.file.reader.campaign
     
+    # TODO: Call or attribute? Check API here...
+    
+    metaparam = sptypes.MetaParameter
+    
     def __init__(self):
         self.init_jvm()
     
@@ -56,10 +60,10 @@ class specchioDBinterface(object):
     
     @classmethod
     def specchio_uploader_test(self):
-
-        # TODO: Call or attribute? Check API here...
+        
+        # Create a spectra file object
         spspectra_file = self.sptypes.SpectralFile()
-        metaparam = self.sptypes.MetaParameter
+
         
         # Connect to server (make this into method as is often called)
         client_factory = self.spclient.SPECCHIOClientFactory.getInstance()
@@ -138,17 +142,17 @@ class specchioDBinterface(object):
             smd = self.sptypes.Metadata()
             
             if i > 0:   
-                mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Target ID'))
+                mp = self.metaparam.newInstance(specchio_client.getAttributesNameHash().get('Target ID'))
                 mp.setValue(str(metadata['Plot'][i]))
                 smd.addEntry(mp)
                 
                 # Add Nitrate
-                mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Nitrate Nitrogen'))
+                mp = self.metaparam.newInstance(specchio_client.getAttributesNameHash().get('Nitrate Nitrogen'))
                 mp.setValue(metadata['Nitrate Nitrogen Mg/Kg'][i])
                 smd.addEntry(mp)
                 
                 # Add Phosphorous
-                mp = metaparam.newInstance(specchio_client.getAttributesNameHash().get('Phosphorus'))
+                mp = self.metaparam.newInstance(specchio_client.getAttributesNameHash().get('Phosphorus'))
                 mp.setValue(metadata['Phosphorus %'][i])
                 smd.addEntry(mp)
                 
