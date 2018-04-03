@@ -36,12 +36,16 @@ class specchioDBinterface(object):
     from pandas dataframes"""
 
     def __init__(self, campaign_name):
+        
+        # Check JVm is up and running, set up a database client and connect 
+        # to the server
         self.init_jvm()
         self.campaign_name = campaign_name
         client_factory = spclient.SPECCHIOClientFactory.getInstance()
         descriptor_list = client_factory.getAllServerDescriptors()
         self.specchio_client = client_factory.createClient(descriptor_list.get(0))
         
+        # Set the campaign name and ID
         self.campaign = sptypes.SpecchioCampaign()
         self.campaign.setName(self.campaign_name)
         self.c_id = self.specchio_client.insertCampaign(self.campaign)
@@ -73,23 +77,16 @@ class specchioDBinterface(object):
         the pandas dartaframe columns to various java array types before they can 
         be uploaded."""
     
-    def specchio_uploader_test(self):
-        
+    def specchio_uploader_test(self, testdatapath):
+        """Uploadr for the test data"""
         # Create a spectra file object
         spspectra_file = sptypes.SpectralFile()
-
-        #self.connect_to_server(self)
-        #self.init_campaign(self, "Uploader test Tues")
         
         # Creating a metadata hierarchy
         hierarchy_id = self.specchio_client.getSubHierarchyId(self.campaign, 'Pasture', 0)
-        # 0 argument specifices the hierarchy has not parent.
+        # 0 argument specifices the hierarchy has no parent.
         
-        # LOADING THE SPECTRAL CSV AND METADATA CSV FILES INTO MATLAB
-        filepath = '/home/centos/Downloads/'
-        filename = 'spectra.csv'
-        
-        with open(filepath + filename, 'r') as csvfile:
+        with open(testdatapath, 'r') as csvfile:
         # Pandas or Numpy?
             wavelens_and_spectra = np.loadtxt(csvfile, delimiter=',')
             wavelengths = wavelens_and_spectra[:,1]
@@ -106,7 +103,6 @@ class specchioDBinterface(object):
         """
         
         # Create a spectral file 
-        #spectra_obj = spspectra_file.
         spspectra_file.setNumberOfSpectra(np.size(spectra,1))
         spspectra_file.setPath(filepath)
         spspectra_file.setFilename(filename)
@@ -171,7 +167,12 @@ class specchioDBinterface(object):
 
 if __name__ == "__main__":
     db_interface = specchioDBinterface("Python test campaign")
-    db_interface.specchio_uploader_test()
+    
+    filepath = '/home/centos/Downloads/'
+    filename = 'spectra.csv'
+    testdatapath = filepath + filename
+
+    db_interface.specchio_uploader_test(testdatapath)
 
 
 
