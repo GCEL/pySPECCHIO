@@ -69,6 +69,8 @@ class specchioDBinterface(object):
         df = df.reindex(df.index.drop(0))
         return df
     
+    def set_spectra_file_info():
+    
     def upload_dataframe(self, dataframe, campaign, hierarchy_id, ):
         """Uploads a pandas dataframe to SPECCHIO"""
         raise NotImplementedError
@@ -76,17 +78,23 @@ class specchioDBinterface(object):
         relevant spectra to be uploaded. This must invlve converting
         the pandas dartaframe columns to various java array types before they can 
         be uploaded."""
+        self.set_spectra_file_info()
     
-    def specchio_uploader_test(self, testdatapath):
+    def specchio_uploader_test(self, filename, filepath, subhierarchy):
         """Uploadr for the test data"""
         # Create a spectra file object
         spspectra_file = sptypes.SpectralFile()
-        
+        spspectra_file.setPath(filepath)
+        spspectra_file.setFilename(filename)
+        spspectra_file.setCompany('UoE')      
         # Creating a metadata hierarchy
-        hierarchy_id = self.specchio_client.getSubHierarchyId(self.campaign, 'Pasture', 0)
+        hierarchy_id = self.specchio_client.getSubHierarchyId(self.campaign, subhierarchy, 0)
         # 0 argument specifices the hierarchy has no parent.
+        # Set the campaign and hierarchy to store in
+        spspectra_file.setHierarchyId(hierarchy_id)
+        spspectra_file.setCampaignId(self.c_id)
         
-        with open(testdatapath, 'r') as csvfile:
+        with open(filepath + filename, 'r') as csvfile:
         # Pandas or Numpy?
             wavelens_and_spectra = np.loadtxt(csvfile, delimiter=',')
             wavelengths = wavelens_and_spectra[:,1]
@@ -94,24 +102,18 @@ class specchioDBinterface(object):
             
             # Now get the metadata
             metadata = self.read_metadata(filepath + "metadata.csv")
-            
-        # Reading and processing Input files.
-        """ The following code generates a spectral file object fills the spectral data
+
+        spspectra_file.setNumberOfSpectra(np.size(spectra,1))   
+
+        """ The following code takes the spectral file object and fills the spectral data
         into a Java array and the Metadata into a metadata object. The spectral file
         object is then stored in the database under the campaign and hierarchy we 
         created.
+        
+        This code is specific to the spectra file/data being uploaded 
+        it should be made more general purpose
         """
-        
-        # Create a spectral file 
-        spspectra_file.setNumberOfSpectra(np.size(spectra,1))
-        spspectra_file.setPath(filepath)
-        spspectra_file.setFilename(filename)
-        spspectra_file.setCompany('UoE')
-        
-        # Set the campaign and hierarchy to store in
-        spspectra_file.setHierarchyId(hierarchy_id)
-        spspectra_file.setCampaignId(self.c_id)
-        
+
         # A numpy temporary holding array, dims of no of spectra x no of wvls
         spectra_array = np.zeros( ( np.size(spectra,1), len(wavelengths) ) )
         
@@ -170,9 +172,8 @@ if __name__ == "__main__":
     
     filepath = '/home/centos/Downloads/'
     filename = 'spectra.csv'
-    testdatapath = filepath + filename
-
-    db_interface.specchio_uploader_test(testdatapath)
+    subhierarchy = 'Pasture'
+    db_interface.specchio_uploader_test(filename, filepath, subhierarchy)
 
 
 
