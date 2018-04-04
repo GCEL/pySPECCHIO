@@ -100,8 +100,8 @@ class specchioDBinterface(object):
         with open(filepath + filename, 'r') as csvfile:
         # Pandas or Numpy?
             wavelens_and_spectra = np.loadtxt(csvfile, delimiter=',')
-            wavelengths = wavelens_and_spectra[:,1]
-            spectra = wavelens_and_spectra[:,2:]
+            wavelengths = wavelens_and_spectra[:,0]
+            spectra = wavelens_and_spectra[:,1:]
             
             # Now get the metadata
             metadata = self.read_metadata(filepath + "metadata.csv")
