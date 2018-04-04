@@ -72,8 +72,10 @@ class specchioDBinterface(object):
     
     def set_spectra_file_info(self, spspectra_file):
         """Set basic info about the spectra file being processed"""
+        # What happens if is dataframe?
         spspectra_file.setPath(filepath)
         spspectra_file.setFilename(filename)
+        
         spspectra_file.setCompany('UoE')      
         # Creating a metadata hierarchy
         hierarchy_id = self.specchio_client.getSubHierarchyId(self.campaign, subhierarchy, 0)
@@ -91,20 +93,24 @@ class specchioDBinterface(object):
         be uploaded."""
         self.set_spectra_file_info()
     
-    def specchio_uploader_test(self, filename, filepath, subhierarchy):
-        """Uploadr for the test data"""
-        # Create a spectra file object and set its params
-        spspectra_file = sptypes.SpectralFile()
-        self.set_spectra_file_info(spspectra_file)
-        
+    def read_test_data(self):
         with open(filepath + filename, 'r') as csvfile:
-        # Pandas or Numpy?
             wavelens_and_spectra = np.loadtxt(csvfile, delimiter=',')
             wavelengths = wavelens_and_spectra[:,0]
             spectra = wavelens_and_spectra[:,1:]
             
             # Now get the metadata
             metadata = self.read_metadata(filepath + "metadata.csv")
+            return wavelengths, spectra, metadata
+    
+    def specchio_uploader_test(self, filename, filepath, subhierarchy):
+        """Uploadr for the test data"""
+        # Create a spectra file object and set its params
+        spspectra_file = sptypes.SpectralFile()
+        self.set_spectra_file_info(spspectra_file)
+        
+        # read test data
+        wavelengths, spectra, metadata = self.read_test_data()
 
         spspectra_file.setNumberOfSpectra(np.size(spectra,1))   
 
