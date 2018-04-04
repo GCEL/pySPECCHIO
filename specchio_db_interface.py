@@ -111,7 +111,8 @@ class specchioDBinterface(object):
         
         # read test data
         wavelengths, spectra, metadata = self.read_test_data()
-
+        
+        # Now we can set the number of spectra
         spspectra_file.setNumberOfSpectra(np.size(spectra,1))   
 
         """ The following code takes the spectral file object and fills the spectral data
@@ -125,22 +126,15 @@ class specchioDBinterface(object):
 
         # A numpy temporary holding array, dims of no of spectra x no of wvls
         spectra_array = np.zeros( ( np.size(spectra,1), len(wavelengths) ) )
-        
-        # Create an array for wavelengths
-        # Translated from MATLAB's javaArray - not sure if this is entirely possbile...
-        java_wavelengths = jp.JArray(jp.JFloat)(list(wavelengths))
-        
+
         for i in range(0,np.size(spectra, 1)):
             vector = spectra[:,i]
             for w in range(0,len(wavelengths)):
                 # Perhaps create a numpy array first and then populate?
                 spectra_array[i,w] = vector[w]
             
-            # Add the wavelengths
-            # This seems horrendously hacky...
-            # TODO: Also it would make the first declartion redundant now? (Revisit later)
-            spspectra_file.addWvls([jp.java.lang.Float(x) for x in java_wavelengths])
-            
+            spspectra_file.addWvls([jp.java.lang.Float(x) for x in wavelengths])
+
             # Add filename: we add an automatic number here to make them distinct
             fname_spectra = filename + str(i)
             spspectra_file.addSpectrumFilename(fname_spectra)
@@ -165,12 +159,7 @@ class specchioDBinterface(object):
                 
                 spspectra_file.addEavMetadata(smd)
         
-        # Convert to a java array the spectra_array
-        #java_spectra_array = jp.JArray(float, 2)(spectra_array.tolist())
-        # does not work when passed to java function expecting float[][]
-        
-        spectra_list = spectra_array.tolist()
-        javafloat_spectra_array = [[jp.java.lang.Float(j) for j in i] for i in spectra_list]
+        javafloat_spectra_array = [[jp.java.lang.Float(j) for j in i] for i in spectra_array]
         
         spspectra_file.setMeasurements(javafloat_spectra_array)
         
