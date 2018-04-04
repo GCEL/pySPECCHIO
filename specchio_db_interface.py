@@ -94,6 +94,8 @@ class specchioDBinterface(object):
         self.set_spectra_file_info()
     
     def read_test_data(self):
+        """Opens and read the test csv spectra and metadata files into a 
+        numpy array"""
         with open(filepath + filename, 'r') as csvfile:
             wavelens_and_spectra = np.loadtxt(csvfile, delimiter=',')
             wavelengths = wavelens_and_spectra[:,0]
@@ -103,8 +105,24 @@ class specchioDBinterface(object):
             metadata = self.read_metadata(filepath + "metadata.csv")
             return wavelengths, spectra, metadata
     
-    def specchio_uploader_test(self, filename, filepath, subhierarchy):
-        """Uploadr for the test data"""
+    def get_dummy_spectra(self):
+        """Produce some dummy spectra for when uploading metadata only"""
+        pass
+    
+    def get_test_spectra(self):
+        """Get spectra from the test file spectra.csv"""
+        pass
+    
+    def specchio_uploader_test(self, filename, filepath, subhierarchy, use_dummy_spectra=False):
+        """Uploader for the test data.
+        
+        The following code takes the spectral file object and fills the spectral data
+        into a Java array and the Metadata into a metadata object. The spectral file
+        object is then stored in the database under the campaign and hierarchy we 
+        created.
+        
+        This code is specific to the spectra file/data being uploaded 
+        it should be made more general purpose"""
         # Create a spectra file object and set its params
         spspectra_file = sptypes.SpectralFile()
         self.set_spectra_file_info(spspectra_file)
@@ -114,15 +132,6 @@ class specchioDBinterface(object):
         
         # Now we can set the number of spectra
         spspectra_file.setNumberOfSpectra(np.size(spectra,1))   
-
-        """ The following code takes the spectral file object and fills the spectral data
-        into a Java array and the Metadata into a metadata object. The spectral file
-        object is then stored in the database under the campaign and hierarchy we 
-        created.
-        
-        This code is specific to the spectra file/data being uploaded 
-        it should be made more general purpose
-        """
 
         # A numpy temporary holding array, dims of no of spectra x no of wvls
         spectra_array = np.zeros( ( np.size(spectra,1), len(wavelengths) ) )
@@ -138,30 +147,31 @@ class specchioDBinterface(object):
             # Add filename: we add an automatic number here to make them distinct
             fname_spectra = filename + str(i)
             spspectra_file.addSpectrumFilename(fname_spectra)
-            
-            # Add plot number 
+
             smd = sptypes.Metadata()
-            
+        
+            # We add metadata for every spectra
             if i > 0:   
+                # Add plot number metaparameter
                 mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Target ID'))
                 mp.setValue(str(metadata['Plot'][i]))
                 smd.addEntry(mp)
                 
-                # Add Nitrate
+                # Add Nitrate metaparameter
                 mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Nitrate Nitrogen'))
                 mp.setValue(metadata['Nitrate Nitrogen Mg/Kg'][i])
                 smd.addEntry(mp)
                 
-                # Add Phosphorous
+                # Add Phosphorous metaparameter
                 mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Phosphorus'))
                 mp.setValue(metadata['Phosphorus %'][i])
                 smd.addEntry(mp)
                 
                 spspectra_file.addEavMetadata(smd)
         
-        javafloat_spectra_array = [[jp.java.lang.Float(j) for j in i] for i in spectra_array]
+        javafloat_spectra_list = [[jp.java.lang.Float(j) for j in i] for i in spectra_array]
         
-        spspectra_file.setMeasurements(javafloat_spectra_array)
+        spspectra_file.setMeasurements(javafloat_spectra_list)
         
         self.specchio_client.insertSpectralFile(spspectra_file)    
 
