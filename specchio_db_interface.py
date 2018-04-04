@@ -12,6 +12,15 @@ import unittest
 import numpy as np
 import pandas as pd
 
+def init_jvm(jvmpath=None):
+    """
+    Checks first to see if JVM is already running.
+    """
+    if jp.isJVMStarted():
+        return
+    jp.startJVM(jp.getDefaultJVMPath(), "-ea", "-Djava.class.path=/usr/local/SPECCHIO/specchio-client.jar")
+
+init_jvm()
 
 spclient = jp.JPackage('ch').specchio.client
 spquery = jp.JPackage('ch').specchio.queries
@@ -39,7 +48,7 @@ class specchioDBinterface(object):
         
         # Check JVm is up and running, set up a database client and connect 
         # to the server
-        self.init_jvm()
+        init_jvm()
         self.campaign_name = campaign_name
         client_factory = spclient.SPECCHIOClientFactory.getInstance()
         descriptor_list = client_factory.getAllServerDescriptors()
@@ -51,14 +60,6 @@ class specchioDBinterface(object):
         self.c_id = self.specchio_client.insertCampaign(self.campaign)
         self.campaign.setId(self.c_id)  # Store the campaign ID in the campaign object.
 
-    def init_jvm(jvmpath=None):
-        """
-        Checks first to see if JVM is already running.
-        """
-        if jp.isJVMStarted():
-            return
-        jp.startJVM(jp.getDefaultJVMPath(), "-ea", "-Djava.class.path=/usr/local/SPECCHIO/specchio-client.jar")
-
     def read_metadata(self, filename):
         """ Reads the example metadata csv file and returns a pandas dataframe"""
         # Read in the csv, transposing it because the names are actually in the 1st column
@@ -69,9 +70,19 @@ class specchioDBinterface(object):
         df = df.reindex(df.index.drop(0))
         return df
     
-    def set_spectra_file_info():
+    def set_spectra_file_info(self, spspectra_file):
+        """Set basic info about the spectra file being processed"""
+        spspectra_file.setPath(filepath)
+        spspectra_file.setFilename(filename)
+        spspectra_file.setCompany('UoE')      
+        # Creating a metadata hierarchy
+        hierarchy_id = self.specchio_client.getSubHierarchyId(self.campaign, subhierarchy, 0)
+        # 0 argument specifices the hierarchy has no parent.
+        # Set the campaign and hierarchy to store in
+        spspectra_file.setHierarchyId(hierarchy_id)
+        spspectra_file.setCampaignId(self.c_id)
     
-    def upload_dataframe(self, dataframe, campaign, hierarchy_id, ):
+    def upload_dataframe(self, dataframe, campaign, hierarchy_id):
         """Uploads a pandas dataframe to SPECCHIO"""
         raise NotImplementedError
         """Convert the below function accept a dartaframe and extract the 
@@ -82,17 +93,9 @@ class specchioDBinterface(object):
     
     def specchio_uploader_test(self, filename, filepath, subhierarchy):
         """Uploadr for the test data"""
-        # Create a spectra file object
+        # Create a spectra file object and set its params
         spspectra_file = sptypes.SpectralFile()
-        spspectra_file.setPath(filepath)
-        spspectra_file.setFilename(filename)
-        spspectra_file.setCompany('UoE')      
-        # Creating a metadata hierarchy
-        hierarchy_id = self.specchio_client.getSubHierarchyId(self.campaign, subhierarchy, 0)
-        # 0 argument specifices the hierarchy has no parent.
-        # Set the campaign and hierarchy to store in
-        spspectra_file.setHierarchyId(hierarchy_id)
-        spspectra_file.setCampaignId(self.c_id)
+        self.set_spectra_file_info(spspectra_file)
         
         with open(filepath + filename, 'r') as csvfile:
         # Pandas or Numpy?
@@ -168,6 +171,7 @@ class specchioDBinterface(object):
         self.specchio_client.insertSpectralFile(spspectra_file)    
 
 if __name__ == "__main__":
+    
     db_interface = specchioDBinterface("Python test campaign")
     
     filepath = '/home/centos/Downloads/'
