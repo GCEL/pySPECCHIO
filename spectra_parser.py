@@ -20,7 +20,7 @@ def read_json():
     """Simple JSON reader"""
     with open(path + spectra_file_test, "r") as f:
         data = json.load(f)
-        return data
+    return data
 
 def pandas_read_json():
     """pandas read json to dataframe"""
@@ -34,10 +34,33 @@ def pandas_read_json_spectra():
     with open(path + spectra_file_test, "r") as f:
         data = json.load(f)
         result = json_normalize(data["Spectra"])
-    return result    
+    return result
+
+def pandas_read_json_str():
+    """Normalise the results to get the spectra"""
+    with open(path + spectra_file_test, "r") as f:
+        data = json.load(f)
+    return data
+
+def get_only_spectra_pixels():
+    """Get just the spectra pixels"""
+    with open(path + spectra_file_test, "r") as f:
+        data = json.load(f)
+        result = json_normalize(data["Spectra"])
+    return result["Pixels"]
+
+
+class spectra_metadata():
+    """Stores the metadata for a set of spectra readings"""
+    def __init__(self):
+        pass
+    
 
 if __name__ == "__main__":
     data1 = read_json()
     df = pandas_read_json()
+    df1 = pandas_read_json_str()
     df2 = pandas_read_json_spectra()
+    pixels = get_only_spectra_pixels()
+    
     
