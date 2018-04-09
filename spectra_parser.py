@@ -49,6 +49,23 @@ def get_only_spectra_pixels():
         result = json_normalize(data["Spectra"])
     return result["Pixels"]
 
+def get_metadata_dict(spectra_number):
+    """Returns the dict represtning the metadata from the spectra file.
+    for ONE of the up/down pairs.
+    
+    Note the file layout is like this:
+        
+    Upwelling Spectra
+    Upwelling Spectra
+    Downwelling Spectra
+    Downwelling Spectra
+    
+    So to get the first upwelling spetra, 0 is used."""
+    whole_file = read_json()
+    # File format has spectra which contains a list of dicts:
+    # Metadata [0] and Pixels [1]
+    return whole_file['Spectra'][0]['Metadata']
+
 
 class spectra_metadata():
     """Stores the metadata for a set of spectra readings"""
@@ -60,7 +77,7 @@ if __name__ == "__main__":
     data1 = read_json()
     df = pandas_read_json()
     df1 = pandas_read_json_str()
-    df2 = pandas_read_json_spectra()
+    df2 = pandas_read_json_spectra() # This is getting all four spectra pairs (UP/DOWN)
     pixels = get_only_spectra_pixels()
     
     
