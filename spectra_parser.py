@@ -13,6 +13,8 @@ import json
 import pandas as pd
 from pandas.io.json import json_normalize
 
+import unittest
+
 path = "/home/centos/Downloads/DATA/Spectra_dir/"
 spectra_file_test = "QEP1USB1_b000000_s000002_light.pico"
 
@@ -49,31 +51,49 @@ def get_only_spectra_pixels():
         result = json_normalize(data["Spectra"])
     return result["Pixels"]
 
+def valid_spectra(spectra_num):
+    """Checks the index provided is a valid range for the spectrometer data
+    """
+    return spectra_num in range(0,4)
+
 def get_metadata_dict(spectra_number):
     """Returns the dict represtning the metadata from the spectra file.
     for ONE of the up/down pairs.
     
     Note the file layout is like this:
         
-    Upwelling Spectra
-    Upwelling Spectra
-    Downwelling Spectra
-    Downwelling Spectra
+    Upwelling Spectra [0]
+    Upwelling Spectra [1]
+    Downwelling Spectra [2]
+    Downwelling Spectra [3]
     
     So to get the first upwelling spetra, 0 is used."""
+    if not valid_spectra(spectra_number):
+        raise IndexError("Not a valid spectra number for this spectrometer: [0-3]")
     whole_file = read_json()
     # File format has spectra which contains a list of dicts:
     # Metadata [0] and Pixels [1]
-    return whole_file['Spectra'][0]['Metadata']
+    return whole_file['Spectra'][spectra_number]['Metadata']
 
 
 class spectra_metadata():
     """Stores the metadata for a set of spectra readings"""
     def __init__(self):
         pass
+
+class TestSpectraParser(unittest.TestCase):
     
+    def test_valid_sepctra(self):
+        for x in range(0,4):
+            self.assertTrue(valid_spectra(x))
+    
+    def test_invalid_spectra(self):
+        for item in [1.5, "foobar", 7, -2]:
+            self.assertFalse(valid_spectra(item))
 
 if __name__ == "__main__":
+    unittest.main()
+    
     data1 = read_json()
     df = pandas_read_json()
     df1 = pandas_read_json_str()
