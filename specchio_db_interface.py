@@ -12,6 +12,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
+import spectra_parser as specp
+
 def init_jvm(jvmpath=None):
     """
     Checks first to see if JVM is already running.
@@ -70,11 +72,11 @@ class specchioDBinterface(object):
         df = df.reindex(df.index.drop(0))
         return df
     
-    def set_spectra_file_info(self, spspectra_file):
+    def set_spectra_file_info(self, spspectra_file, spectra_filepath, spectra_filename):
         """Set basic info about the spectra file being processed"""
         # What happens if is dataframe?
-        spspectra_file.setPath(filepath)
-        spspectra_file.setFilename(filename)
+        spspectra_file.setPath(spectra_filepath)
+        spspectra_file.setFilename(spectra_filename)
         
         spspectra_file.setCompany('UoE')      
         # Creating a metadata hierarchy
@@ -113,6 +115,30 @@ class specchioDBinterface(object):
         """Get spectra from the test file spectra.csv"""
         pass
     
+    def get_all_pico_spectra(self):
+        """Gets a spectra from the PICO json spectra files"""
+
+        return np.array([specp.get_spectra_pixels(x) for x in range(0,4)])
+        # Returns an array of lists, because lists are not same lengths
+        # (Not a 2D array, as might be expected)
+
+    def get_single_pico_spectra(self, spectra_num):
+        """Gets a spectra from the PICO json spectra files"""
+        return specp.get_spectra_pixels(spectra_num)
+
+    
+    def specchio_upload_pico_spectra(self, spectra_filename, spectra_filepath):
+        """Upload the PICO type spectra.
+        
+        Remember, the specs are:
+            2 sets of Up and Down spectra (four in total)
+            Each have their own set of metadata
+        """
+        # Create a spectra file object
+        spspectra_file_obj = sptypes.SpectralFile()
+        self.set_spectra_file_info(spspectra_file_obj, spectra_filename, spectra_filepath)
+        # as below.... loop through the four spectra
+        
     def specchio_uploader_test(self, filename, filepath, subhierarchy, use_dummy_spectra=False):
         """Uploader for the test data.
         
@@ -125,7 +151,7 @@ class specchioDBinterface(object):
         it should be made more general purpose"""
         # Create a spectra file object and set its params
         spspectra_file = sptypes.SpectralFile()
-        self.set_spectra_file_info(spspectra_file)
+        self.set_spectra_file_info(spspectra_file, filepath, filename)
         
         # read test data
         wavelengths, spectra, metadata = self.read_test_data()

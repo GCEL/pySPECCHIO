@@ -56,7 +56,7 @@ def valid_spectra(spectra_num):
     """
     return spectra_num in range(0,4)
 
-def get_metadata_dict(spectra_number):
+def get_spectra_metadata(spectra_number):
     """Returns the dict represtning the metadata from the spectra file.
     for ONE of the up/down pairs.
     
@@ -74,6 +74,25 @@ def get_metadata_dict(spectra_number):
     # File format has spectra which contains a list of dicts:
     # Metadata [0] and Pixels [1]
     return whole_file['Spectra'][spectra_number]['Metadata']
+
+def get_spectra_pixels(spectra_number):
+    """Returns the dict represtning the metadata from the spectra file.
+    for ONE of the up/down pairs.
+    
+    Note the file layout is like this:
+        
+    Upwelling Spectra [0]     len = 1044
+    Upwelling Spectra [1]     len = 2048
+    Downwelling Spectra [2]   len = 1044
+    Downwelling Spectra [3]   len = 2048
+    
+    So to get the first upwelling spetra, 0 is used."""
+    if not valid_spectra(spectra_number):
+        raise IndexError("Not a valid spectra number for this spectrometer: [0-3]")
+    whole_file = read_json()
+    # File format has spectra which contains a list of dicts:
+    # Metadata [0] and Pixels [1]
+    return whole_file['Spectra'][spectra_number]['Pixels']
 
 
 class spectra_metadata():
@@ -99,5 +118,6 @@ if __name__ == "__main__":
     df1 = pandas_read_json_str()
     df2 = pandas_read_json_spectra() # This is getting all four spectra pairs (UP/DOWN)
     pixels = get_only_spectra_pixels()
+    metadata_upwell_zero = get_spectra_metadata(0)
     
     
