@@ -138,6 +138,25 @@ class specchioDBinterface(object):
         spspectra_file_obj = sptypes.SpectralFile()
         self.set_spectra_file_info(spspectra_file_obj, spectra_filename, spectra_filepath)
         # as below.... loop through the four spectra
+        spectra = self.get_all_pico_spectra()
+        # Should be 4 for PICO file format
+        num_spectras = np.size(spectra)
+        num_wavelens = 2048 # Should not be hard coded in final version, OK for now...
+        # Could be max len of spectra lists? 1044 vs 2044
+        
+        spspectra_file_obj.setNumberOfSpectra(num_spectras)
+        
+        # A numpy temporary holding array, dims of no of spectra x no of wvls
+        spectra_array = np.zeros( ( num_spectras, num_wavelens ) )
+        
+        for i in range(0, num_spectras):
+            vector = spectra[i]  # 4 spectras from the PICO
+            # TODO: not sure what the wavelengths are yet...use length 1...n
+            for w in range(0, len(vector)):
+                spectra_array[i,w] = vector[w]
+
+            spspectra_file_obj.addWvls([jp.java.lang.Float(x) for x in range(1, num_wavelens + 1)])
+
         
     def specchio_uploader_test(self, filename, filepath, subhierarchy, use_dummy_spectra=False):
         """Uploader for the test data.
@@ -157,7 +176,7 @@ class specchioDBinterface(object):
         wavelengths, spectra, metadata = self.read_test_data()
         
         # Now we can set the number of spectra
-        spspectra_file.setNumberOfSpectra(np.size(spectra,1))   
+        spspectra_file.setNumberOfSpectra(np.size(spectra,1))
 
         # A numpy temporary holding array, dims of no of spectra x no of wvls
         spectra_array = np.zeros( ( np.size(spectra,1), len(wavelengths) ) )
