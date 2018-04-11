@@ -12,6 +12,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
+import unittest
+
 import spectra_parser as specp
 
 def init_jvm(jvmpath=None):
@@ -45,6 +47,15 @@ class Campaign(object):
 class specchioDBinterface(object):
     """Object to manage interations with the SPECCHIO db and handle uplodas 
     from pandas dataframes"""
+    
+    PICO_METADATA = ['Batch', 'Dark', 'Datetime', 'Direction',
+                     'IntegrationTime', 'IntegrationTimeUnits',
+                     'NonlinearityCorrectionCoefficients', 'OpticalPixelRange',
+                     'Run', 'SaturationLevel', 'SerialNumber',
+                     'TemperatureDetectorActual', 'TemperatureDetectorSet',
+                     'TemperatureHeatsink', 'TemperatureMicrocontroller',
+                     'TemperaturePCB', 'TemperatureUnits', 'Type',
+                     'WavelengthCalibrationCoefficients', 'name']
 
     def __init__(self, campaign_name):
         
@@ -115,16 +126,55 @@ class specchioDBinterface(object):
         """Get spectra from the test file spectra.csv"""
         pass
     
+    def get_all_pico_metadata(self):
+        """ Gets all the metadata from the PICO JSON spectra files.
+        
+        Returns:
+            A list of metadata dictionaries, four for each of the four spectra
+        """
+        return [specp.get_spectra_metadata(x) for x in range(0,4)]
+    
     def get_all_pico_spectra(self):
-        """Gets a spectra from the PICO json spectra files"""
-
+        """Gets a spectra from the PICO json spectra files.
+        
+        Returns an array of lists, because lists are not same lengths
+        (Not a 2D array, as might be expected)
+        """
         return np.array([specp.get_spectra_pixels(x) for x in range(0,4)])
-        # Returns an array of lists, because lists are not same lengths
-        # (Not a 2D array, as might be expected)
+
 
     def get_single_pico_spectra(self, spectra_num):
         """Gets a spectra from the PICO json spectra files"""
         return specp.get_spectra_pixels(spectra_num)
+
+    def add_pico_metadata_for_spectra(self, smd, metadata, spectra_index):
+        """Adds the spectrometer-specific metadata to the spectra file"""
+        # Add plot number metaparameter
+        mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Target ID'))
+        mp.setValue(str(metadata[spectra_index]['Plot']))
+        smd.addEntry(mp)
+        
+        # Add Nitrate metaparameter
+        mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Nitrate Nitrogen'))
+        mp.setValue(metadata[spectra_index]['Nitrate Nitrogen Mg/Kg'])
+        smd.addEntry(mp)
+        
+        # Add Phosphorous metaparameter
+        mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Phosphorus'))
+        mp.setValue(metadata[spectra_index]['Phosphorus %'])
+        smd.addEntry(mp)
+    
+    def add_ancillary_metadata_for_spectra(self, smd, ancil_metadata, spectra_index):
+        """Adds the 'other' anciliary metadata, e.g. LAI, Soils etc to the
+        spectra file metadata. Most of this is not really specific metadata 
+        to the instrument, but other measured data.
+        
+        This metadata comes from the parser_pandas module file, which parses
+        the excel files and returns them as pandas dataframes, by data type,
+        with the rows in each dataframe referring to the plot"""
+        
+               
+        
 
     
     def specchio_upload_pico_spectra(self, spectra_filename, spectra_filepath):
@@ -139,9 +189,12 @@ class specchioDBinterface(object):
         self.set_spectra_file_info(spspectra_file_obj, spectra_filename, spectra_filepath)
         # as below.... loop through the four spectra
         spectra = self.get_all_pico_spectra()
+        metadata = self.get
         # Should be 4 for PICO file format
         num_spectras = np.size(spectra)
+        # TODO: remove hard coding
         num_wavelens = 2048 # Should not be hard coded in final version, OK for now...
+        dummy_wavelens = np.linspace(1.0, 2048.0, num_wavelens)
         # Could be max len of spectra lists? 1044 vs 2044
         
         spspectra_file_obj.setNumberOfSpectra(num_spectras)
@@ -154,8 +207,24 @@ class specchioDBinterface(object):
             # TODO: not sure what the wavelengths are yet...use length 1...n
             for w in range(0, len(vector)):
                 spectra_array[i,w] = vector[w]
+            # Add wavelens
+            spspectra_file_obj.addWvls([jp.java.lang.Float(x) for x in dummy_wavelens])
+            # Add filename: we add an automatic number here to make them distinct
+            fname_spectra = spectra_filename + str(i)
+            spspectra_file_obj.addSpectrumFilename(fname_spectra)
+            
+            # Metadata...FOR EACH SPECTRA (use dummy if needed)
+            #=-=-=-=-=-=
+            smd = sptypes.Metadata()
+            self.add_pico_metadata_for_spectra(smd, metadata)
+            spspectra_file_obj.addEavMetadata(smd)
 
-            spspectra_file_obj.addWvls([jp.java.lang.Float(x) for x in range(1, num_wavelens + 1)])
+        # Convert the spectra list to a suitable 
+        javafloat_spectra_list = [[jp.java.lang.Float(j) for j in i] for i in spectra_array]
+        
+        spspectra_file_obj.setMeasurements(javafloat_spectra_list)
+        
+        self.specchio_client.insertSpectralFile(spspectra_file_obj)             
 
         
     def specchio_uploader_test(self, filename, filepath, subhierarchy, use_dummy_spectra=False):
@@ -193,8 +262,8 @@ class specchioDBinterface(object):
             fname_spectra = filename + str(i)
             spspectra_file.addSpectrumFilename(fname_spectra)
 
+            # Metadata has to be added at the spectra level, i.e. metadata for each spectra
             smd = sptypes.Metadata()
-        
             # We add metadata for every spectra
             if i > 0:   
                 # Add plot number metaparameter
