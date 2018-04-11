@@ -56,6 +56,12 @@ class specchioDBinterface(object):
                      'TemperatureHeatsink', 'TemperatureMicrocontroller',
                      'TemperaturePCB', 'TemperatureUnits', 'Type',
                      'WavelengthCalibrationCoefficients', 'name']
+    
+    # Pico metadata name key to database descriptor name
+    MAP_PICO_METADATA_SPECCHIONAME = {'Batch': 'Batch'} # etc. # Check what is already specified in the DB, add missing ones
+    
+    # Other metadata
+    MAP_ANCIL_METADATA_SPECCHIONAME = {} # Same but most of these will be new keys, added to the MYSQL db
 
     def __init__(self, campaign_name):
         
@@ -150,6 +156,12 @@ class specchioDBinterface(object):
     def add_pico_metadata_for_spectra(self, smd, metadata, spectra_index):
         """Adds the spectrometer-specific metadata to the spectra file"""
         # Add plot number metaparameter
+        for metadata_key in self.PICO_METADATA:
+            mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get(self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
+            mp.setValue(str(metadata[spectra_index][metadata_key]))
+            smd.addEntry(mp)            
+        
+        """Old
         mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Target ID'))
         mp.setValue(str(metadata[spectra_index]['Plot']))
         smd.addEntry(mp)
@@ -163,6 +175,7 @@ class specchioDBinterface(object):
         mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Phosphorus'))
         mp.setValue(metadata[spectra_index]['Phosphorus %'])
         smd.addEntry(mp)
+        """
     
     def add_ancillary_metadata_for_spectra(self, smd, ancil_metadata, spectra_index):
         """Adds the 'other' anciliary metadata, e.g. LAI, Soils etc to the
@@ -171,7 +184,7 @@ class specchioDBinterface(object):
         
         This metadata comes from the parser_pandas module file, which parses
         the excel files and returns them as pandas dataframes, by data type,
-        with the rows in each dataframe referring to the plot"""
+        with the rows in each dataframe referring to the plot."""
         
                
         
