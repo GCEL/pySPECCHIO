@@ -4,13 +4,15 @@ python:
  - '3.5'
  - '3.6'
 
+before_install:
+ - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+ - chmod +x miniconda.sh
+ - ./miniconda.sh -b
+ - export PATH=/home/travis/miniconda/bin:$PATH
+ - conda update --yes conda
+
 install:
- - sudo pip install conda
- - sudo conda init
- - sudo conda update conda --yes
- - deps='pip numpy pandas'
- - conda create -p $HOME/py --yes $deps "python=$TRAVIS_PYTHON_VERSION"
- - export PATH=$HOME/py/bin:$PATH
+ - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy pandas
 
 script:
  - python3 -m unittest test.test_parsers 
