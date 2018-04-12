@@ -50,7 +50,6 @@ def extract_excel_format(filefullname, dictname):
         upper_header = pd.MultiIndex.from_product([['Sample1', 'Sample2', 
         'Sample3', 'Sample4', 'Sample5', 'PlotAverage'],
         ['Fo', 'Fv', 'Fm', 'Fv/Fm', 'Fv/Fo']])
-        import pdb; pdb.set_trace()
         new_header = dataframes[dictname].columns[0:3].union(upper_header)
         dataframes[dictname].columns = new_header
     if dictname in dataframes:
