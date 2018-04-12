@@ -1,4 +1,4 @@
 numpy
 pandas
 jpype1
-
+xlrd

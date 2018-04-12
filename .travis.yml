@@ -13,7 +13,7 @@ before_install:
  - conda update --yes conda
 
 install:
- - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy pandas
+ - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy pandas xlrd
 
 script:
  - python3 -m unittest test.test_parsers 
