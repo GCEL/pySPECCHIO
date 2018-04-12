@@ -16,42 +16,39 @@ from pandas.io.json import json_normalize
 import unittest
 
 class SpectraFile(object):
-    SPECTRAFILE = "None"
-    SPECTRA_PATH = "None"
-    
-    def set_spectra_file(self, spectra_filename, spectra_filepath):
-        self.SPECTRA_PATH = spectra_filepath
-        self.SPECTRAFILE = spectra_filename
+    def __init__(self, spectrafile, spectrapath):
+        self.sfile = spectrafile
+        self.spath = spectrapath
 
-    def read_json(self, path, spectra_file):
+    def read_json(self):
         """Simple JSON reader"""
-        with open(path + spectra_file, "r") as f:
+        with open(self.spath + self.sfile, "r") as f:
             data = json.load(f)
         return data
     
-    def pandas_read_json(self, path, spectra_file):
+    def pandas_read_json(self):
         """pandas read json to dataframe"""
-        with open(path + spectra_file, "r") as f:
+        with open(self.spath + self.sfile, "r") as f:
             data = json.load(f)
         dataframe = pd.DataFrame(data)
         return dataframe
     
-    def pandas_read_json_spectra(self, path, spectra_file):
+    def pandas_read_json_spectra(self):
         """Normalise the results to get the spectra"""
-        with open(path + spectra_file, "r") as f:
+        with open(self.spath + self.sfile, "r") as f:
             data = json.load(f)
             result = json_normalize(data["Spectra"])
         return result
     
-    def pandas_read_json_str(self, path, spectra_file):
+    def pandas_read_json_str(self):
         """Normalise the results to get the spectra"""
-        with open(path + spectra_file, "r") as f:
+        with open(self.spath + self.sfile, "r") as f:
             data = json.load(f)
         return data
     
-    def get_only_spectra_pixels(self, path, spectra_file):
+    def get_only_spectra_pixels(self):
         """Get just the spectra pixels"""
-        with open(path + spectra_file, "r") as f:
+        with open(self.spath + self.sfile, "r") as f:
             data = json.load(f)
             result = json_normalize(data["Spectra"])
         return result["Pixels"]
@@ -80,7 +77,7 @@ class SpectraFile(object):
         # Metadata [0] and Pixels [1]
         return whole_file['Spectra'][spectra_number]['Metadata']
     
-    def get_spectra_pixels(self, spectra_number, path, filename):
+    def get_spectra_pixels(self, spectra_number):
         """Returns the dict represtning the metadata from the spectra file.
         for ONE of the up/down pairs.
         
@@ -94,7 +91,7 @@ class SpectraFile(object):
         So to get the first upwelling spetra, 0 is used."""
         if not self.valid_spectra(spectra_number):
             raise IndexError("Not a valid spectra number for this spectrometer: [0-3]")
-        whole_file = self.read_json(path, filename)
+        whole_file = self.read_json()
         # File format has spectra which contains a list of dicts:
         # Metadata [0] and Pixels [1]
         return whole_file['Spectra'][spectra_number]['Pixels']
@@ -119,17 +116,19 @@ class TestSpectraParser(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-    
-    sf = SpectraFile()
-       
+ 
     path = '/home/centos/Downloads/'
     filename = 'spectra.csv'
     
-    data1 = sf.read_json(path, filename)
-    df = sf.pandas_read_json(path, filename)
-    df1 = sf.pandas_read_json_str(path, filename)
-    df2 = sf.pandas_read_json_spectra(path, filename) # This is getting all four spectra pairs (UP/DOWN)
-    pixels = sf.get_only_spectra_pixels(path, filename)
+    # Create a spectra file object 
+    sf = SpectraFile(filename, path)
+    
+    # Test the parse methods
+    data1 = sf.read_json()
+    df = sf.pandas_read_json()
+    df1 = sf.pandas_read_json_str()
+    df2 = sf.pandas_read_json_spectra() # This is getting all four spectra pairs (UP/DOWN)
+    pixels = sf.get_only_spectra_pixels()
     metadata_upwell_zero = sf.get_spectra_metadata(0)
     
     
