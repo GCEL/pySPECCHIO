@@ -1,4 +1,10 @@
 language: python
+python:
+ - '3.3'
+ - '3.5'
+ - '3.6'
 
-# Test the parser works
-python parser_pandas.py
+install: true
+
+script:
+ - run_tests.sh
