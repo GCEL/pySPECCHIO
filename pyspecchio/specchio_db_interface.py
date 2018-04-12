@@ -112,7 +112,7 @@ class specchioDBinterface(object):
         be uploaded."""
         self.set_spectra_file_info()
     
-    def read_test_data(self):
+    def read_test_data(self, filename, filepath):
         """Opens and read the test csv spectra and metadata files into a 
         numpy array"""
         with open(filepath + filename, 'r') as csvfile:
@@ -157,25 +157,11 @@ class specchioDBinterface(object):
         """Adds the spectrometer-specific metadata to the spectra file"""
         # Add plot number metaparameter
         for metadata_key in self.PICO_METADATA:
-            mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get(self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
+            mp = metaparam.newInstance(
+                    self.specchio_client.getAttributesNameHash().get(
+                            self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
             mp.setValue(str(metadata[spectra_index][metadata_key]))
-            smd.addEntry(mp)            
-        
-        """Old
-        mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Target ID'))
-        mp.setValue(str(metadata[spectra_index]['Plot']))
-        smd.addEntry(mp)
-        
-        # Add Nitrate metaparameter
-        mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Nitrate Nitrogen'))
-        mp.setValue(metadata[spectra_index]['Nitrate Nitrogen Mg/Kg'])
-        smd.addEntry(mp)
-        
-        # Add Phosphorous metaparameter
-        mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Phosphorus'))
-        mp.setValue(metadata[spectra_index]['Phosphorus %'])
-        smd.addEntry(mp)
-        """
+            smd.addEntry(mp)
     
     def add_ancillary_metadata_for_spectra(self, smd, ancil_metadata, spectra_index):
         """Adds the 'other' anciliary metadata, e.g. LAI, Soils etc to the
@@ -185,11 +171,13 @@ class specchioDBinterface(object):
         This metadata comes from the parser_pandas module file, which parses
         the excel files and returns them as pandas dataframes, by data type,
         with the rows in each dataframe referring to the plot."""
-        
-               
-        
+        for ancildata_key in self.MAP_ANCIL_METADATA_SPECCHIONAME.keys():
+            mp = metaparam.newInstance(
+                    self.specchio_client.getAttributesNameHash().get(
+                            self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
+            mp.setValue(str(ancil_metadata[spectra_index][ancildata_key]))
+            smd.addEntry(mp)           
 
-    
     def specchio_upload_pico_spectra(self, spectra_filename, spectra_filepath):
         """Upload the PICO type spectra.
         
@@ -197,6 +185,7 @@ class specchioDBinterface(object):
             2 sets of Up and Down spectra (four in total)
             Each have their own set of metadata
         """
+        specp.set_spectra_file(spectra_filename, spectra_filepath)
         # Create a spectra file object
         spspectra_file_obj = sptypes.SpectralFile()
         self.set_spectra_file_info(spspectra_file_obj, spectra_filename, spectra_filepath)
@@ -230,6 +219,7 @@ class specchioDBinterface(object):
             #=-=-=-=-=-=
             smd = sptypes.Metadata()
             self.add_pico_metadata_for_spectra(smd, metadata)
+            #self.add_ancillary_metadata_for_spectra(smd, metadata)
             spspectra_file_obj.addEavMetadata(smd)
 
         # Convert the spectra list to a suitable 
@@ -243,6 +233,8 @@ class specchioDBinterface(object):
     def specchio_uploader_test(self, filename, filepath, subhierarchy, use_dummy_spectra=False):
         """Uploader for the test data.
         
+        DEPRECATED
+        
         The following code takes the spectral file object and fills the spectral data
         into a Java array and the Metadata into a metadata object. The spectral file
         object is then stored in the database under the campaign and hierarchy we 
@@ -255,7 +247,7 @@ class specchioDBinterface(object):
         self.set_spectra_file_info(spspectra_file, filepath, filename)
         
         # read test data
-        wavelengths, spectra, metadata = self.read_test_data()
+        wavelengths, spectra, metadata = self.read_test_data(filename, filepath)
         
         # Now we can set the number of spectra
         spspectra_file.setNumberOfSpectra(np.size(spectra,1))
@@ -306,10 +298,15 @@ if __name__ == "__main__":
     
     db_interface = specchioDBinterface("Python test campaign")
     
-    filepath = '/home/centos/Downloads/'
-    filename = 'spectra.csv'
-    subhierarchy = 'Pasture'
-    db_interface.specchio_uploader_test(filename, filepath, subhierarchy)
+    #filepath = '/home/centos/Downloads/'
+    #filename = 'spectra.csv'
+    
+    spectra_testpath = "/home/centos/Downloads/DATA/Spectra_dir/"
+    spectra_file_test = "QEP1USB1_b000000_s000002_light.pico"
+    
+    subhierarchy = 'PlotScale'
+    
+    db_interface.specchio_upload_pico_spectra(spectra_filename=spectra_file_test, spectra_filepath=spectra_testpath)
 
 
 
