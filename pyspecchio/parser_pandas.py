@@ -17,6 +17,10 @@ dataframes = {}
 # Names of soil sheets in the Soils directory
 SOILS_SUBTABLES = ('Moisture', 'ResinExtracts', 'pH', 'NitrateAmmonia')
 
+# Expected names of ancil data 
+ANCIL_DATA_NAMES = ('Fluorescence', 'GS', 'Harvest', 'CN', 'HI', 'Height',
+                    'LAI', 'SPAD', 'ThetaProbe',
+                    'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH')
 
 def file_and_dict_name(dirname, fname):
     filefullname = os.path.join(dirname, fname)

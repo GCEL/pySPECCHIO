@@ -60,9 +60,10 @@ class specchioDBinterface(object):
     # Pico metadata name key to database descriptor name
     MAP_PICO_METADATA_SPECCHIONAME = {'Batch': 'Batch'} # etc. # Check what is already specified in the DB, add missing ones
     
-    # Other metadata
-    MAP_ANCIL_METADATA_SPECCHIONAME = {} # Same but most of these will be new keys, added to the MYSQL db
-
+    # Other metadata -should contain sublevel headings or No?
+    MAP_ANCIL_METADATA_SPECCHIONAME = {'Fluorescence', 'GS', 'Harvest', 'CN',
+                    'HI', 'Height', 'LAI', 'SPAD', 'ThetaProbe',
+                    'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH'} 
     def __init__(self, campaign_name):
         
         # Check JVm is up and running, set up a database client and connect 
@@ -148,6 +149,11 @@ class specchioDBinterface(object):
         """
         return np.array([spectrafile.get_spectra_pixels(x) for x in range(0,4)])
 
+    def get_all_ancil_metadata(self, ancildatadir):
+        """
+        Gets all the dataframes from the ancillary data.
+        """
+        return
 
     def get_single_pico_spectra(self, spectra_num):
         """Gets a spectra from the PICO json spectra files"""
@@ -172,7 +178,9 @@ class specchioDBinterface(object):
         
         This metadata comes from the parser_pandas module file, which parses
         the excel files and returns them as pandas dataframes, by data type,
-        with the rows in each dataframe referring to the plot."""
+        with the rows in each dataframe referring to the plot.
+        
+        """
         for ancildata_key in self.MAP_ANCIL_METADATA_SPECCHIONAME.keys():
             mp = metaparam.newInstance(
                     self.specchio_client.getAttributesNameHash().get(
