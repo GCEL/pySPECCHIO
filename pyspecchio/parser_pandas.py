@@ -12,16 +12,6 @@ import warnings
 import pandas as pd
 
 
-DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
-#DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
-
-TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
-                "ES_F1_2017/plot_scale_data/LAI/")
-#TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
-#                "ES_F1_2017/plot_scale_data/LAI/")
-
-
-
 dataframes = {}
 
 # Names of soil sheets in the Soils directory
@@ -38,8 +28,8 @@ def file_and_dict_name(dirname, fname):
     return (filefullname, dictname)
 
 
-def extract_dataframes():
-    for (dirname, subdirs, files) in os.walk(DATADIR):
+def extract_dataframes(directory):
+    for (dirname, subdirs, files) in os.walk(directory):
         # print('[' + dirname + ']')
         for fname in files:
             # Only match "xlsx" files, exclude recovery/backup files
@@ -116,6 +106,17 @@ class PRNdata(object):
 
 
 class TestParser(unittest.TestCase):
+    
+    #DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
+    #DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
+    DATADIR = "/home/centos/Python/test/DATA/"
+    
+    #TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
+    #                "ES_F1_2017/plot_scale_data/LAI/")
+    #TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
+    #                "ES_F1_2017/plot_scale_data/LAI/")
+    TEST_PRN_DIR = ("/home/centos/Python/test/DATA/ES/field_scale/"
+                    "ES_F1_2017/plot_scale_data/LAI/")
 
     def test_correct_files_parsed(self):
 
@@ -128,19 +129,19 @@ class TestParser(unittest.TestCase):
 
     def test_PRN_parsing_columns(self):
         """PRN data should have nine columns if correctly ingested"""
-        filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
+        filefullname = self.TEST_PRN_DIR + "20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
         self.assertEqual(len(dataframes['TEST_PRN_dict'].columns), 9)
 
     def test_PRN_parsing_rows(self):
         """PRN data should have 261 rows if correctly ingested"""
-        filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
+        filefullname = self.TEST_PRN_DIR + "20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
         self.assertEqual(len(dataframes['TEST_PRN_dict']), 261)
 
     def test_PRN_line(self):
         """Test a line has been correctly parsed"""
-        filefullname = TEST_PRN_DIR + "20170714_LAI.PRN"
+        filefullname = self.TEST_PRN_DIR + "20170714_LAI.PRN"
         extract_PRN_format(filefullname, "TEST_PRN_dict")
 
         df_line = dataframes['TEST_PRN_dict'].loc[0]
@@ -148,7 +149,7 @@ class TestParser(unittest.TestCase):
     def test_generate_PRN_lines(self):
         """Test that we can strip and print the PRN text file lines.
         Print statement around next() is removed now."""
-        reader = generate_goodPRNline(TEST_PRN_DIR + "20170714_LAI.PRN")
+        reader = generate_goodPRNline(self.TEST_PRN_DIR + "20170714_LAI.PRN")
         while True:
             try:
                 next(reader)
