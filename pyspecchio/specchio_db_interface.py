@@ -132,21 +132,21 @@ class specchioDBinterface(object):
         """Get spectra from the test file spectra.csv"""
         pass
     
-    def get_all_pico_metadata(self):
+    def get_all_pico_metadata(self, spectrafile):
         """ Gets all the metadata from the PICO JSON spectra files.
         
         Returns:
             A list of metadata dictionaries, four for each of the four spectra
         """
-        return [specp.get_spectra_metadata(x) for x in range(0,4)]
+        return [spectrafile.get_spectra_metadata(x) for x in range(0,4)]
     
-    def get_all_pico_spectra(self):
+    def get_all_pico_spectra(self, spectrafile):
         """Gets a spectra from the PICO json spectra files.
         
         Returns an array of lists, because lists are not same lengths
         (Not a 2D array, as might be expected)
         """
-        return np.array([specp.get_spectra_pixels(x) for x in range(0,4)])
+        return np.array([spectrafile.get_spectra_pixels(x) for x in range(0,4)])
 
 
     def get_single_pico_spectra(self, spectra_num):
@@ -156,6 +156,8 @@ class specchioDBinterface(object):
     def add_pico_metadata_for_spectra(self, smd, metadata, spectra_index):
         """Adds the spectrometer-specific metadata to the spectra file"""
         # Add plot number metaparameter
+        # TODO
+        return # Gives null pointer (I think because of the keys missing from DB)
         for metadata_key in self.PICO_METADATA:
             mp = metaparam.newInstance(
                     self.specchio_client.getAttributesNameHash().get(
@@ -178,20 +180,22 @@ class specchioDBinterface(object):
             mp.setValue(str(ancil_metadata[spectra_index][ancildata_key]))
             smd.addEntry(mp)           
 
-    def specchio_upload_pico_spectra(self, spectra_filename, spectra_filepath):
+    def specchio_upload_pico_spectra(self, spectrafile):
         """Upload the PICO type spectra.
+        
+        Args:
+            spectrafile: a SpectraFile object
         
         Remember, the specs are:
             2 sets of Up and Down spectra (four in total)
             Each have their own set of metadata
         """
-        specp.set_spectra_file(spectra_filename, spectra_filepath)
         # Create a spectra file object
         spspectra_file_obj = sptypes.SpectralFile()
-        self.set_spectra_file_info(spspectra_file_obj, spectra_filename, spectra_filepath)
+        self.set_spectra_file_info(spspectra_file_obj, spectrafile.sfile, spectrafile.spath)
         # as below.... loop through the four spectra
-        spectra = self.get_all_pico_spectra()
-        metadata = self.get
+        spectra = self.get_all_pico_spectra(spectrafile)
+        metadata = self.get_all_pico_metadata(spectrafile)
         # Should be 4 for PICO file format
         num_spectras = np.size(spectra)
         # TODO: remove hard coding
@@ -212,13 +216,13 @@ class specchioDBinterface(object):
             # Add wavelens
             spspectra_file_obj.addWvls([jp.java.lang.Float(x) for x in dummy_wavelens])
             # Add filename: we add an automatic number here to make them distinct
-            fname_spectra = spectra_filename + str(i)
+            fname_spectra = spectrafile.sfile + str(i)
             spspectra_file_obj.addSpectrumFilename(fname_spectra)
             
             # Metadata...FOR EACH SPECTRA (use dummy if needed)
             #=-=-=-=-=-=
             smd = sptypes.Metadata()
-            self.add_pico_metadata_for_spectra(smd, metadata)
+            self.add_pico_metadata_for_spectra(smd, metadata, i)
             #self.add_ancillary_metadata_for_spectra(smd, metadata)
             spspectra_file_obj.addEavMetadata(smd)
 
@@ -305,8 +309,10 @@ if __name__ == "__main__":
     spectra_file_test = "QEP1USB1_b000000_s000002_light.pico"
     
     subhierarchy = 'PlotScale'
-    
-    db_interface.specchio_upload_pico_spectra(spectra_filename=spectra_file_test, spectra_filepath=spectra_testpath)
+    # Create a file object to handle parsing of the files.
+    spectrafile = specp.SpectraFile(spectra_file_test, spectra_testpath)
+    # Create an interface object to handling interfaceing with SPECCHIO
+    db_interface.specchio_upload_pico_spectra(spectrafile)
 
 
 
