@@ -30,7 +30,6 @@ def file_and_dict_name(dirname, fname):
 
 def extract_dataframes(directory):
     for (dirname, subdirs, files) in os.walk(directory):
-        # print('[' + dirname + ']')
         for fname in files:
             # Only match "xlsx" files, exclude recovery/backup files
             if re.match("^(?![~$]).*.xlsx$", fname):
@@ -51,7 +50,8 @@ def extract_excel_format(filefullname, dictname):
         upper_header = pd.MultiIndex.from_product([['Sample1', 'Sample2', 
         'Sample3', 'Sample4', 'Sample5', 'PlotAverage'],
         ['Fo', 'Fv', 'Fm', 'Fv/Fm', 'Fv/Fo']])
-        new_header = dataframes[dictname].columns[0:3] + upper_header
+        import pdb; pdb.set_trace()
+        new_header = dataframes[dictname].columns[0:3].union(upper_header)
         dataframes[dictname].columns = new_header
     if dictname in dataframes:
         # Perhaps log as well if duplicate
@@ -122,7 +122,7 @@ class TestParser(unittest.TestCase):
 
         BAD_STRINGS = ['$', '~', 'csv', 'xls']
 
-        dfs = extract_dataframes()
+        dfs = extract_dataframes(self.DATADIR)
         # Could be the other way round I suppose...
         for bad_string in BAD_STRINGS:
             self.assertFalse(any(bad_string in key for key in dfs.keys()))
