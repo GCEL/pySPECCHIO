@@ -58,9 +58,28 @@ class specchioDBinterface(object):
                      'WavelengthCalibrationCoefficients', 'name']
     
     # Pico metadata name key to database descriptor name
-    MAP_PICO_METADATA_SPECCHIONAME = {'Batch': 'Batch'} # etc. # Check what is already specified in the DB, add missing ones
+    MAP_PICO_METADATA_SPECCHIONAME = {'Batch': 'Batch',
+'Dark': 'Dark',   # Automatic Dark Correction? (Instrument Settings Group) (boolean)
+'Datetime': 'Datetime',
+'Direction': 'Direction',
+'IntegrationTime': 'Integration Time',   # Existing (Instrument Settings Group)
+'IntegrationTimeUnits': 'IntegrationTimeUnits',
+'NonlinearityCorrectionCoefficients': 'NonlinearityCorrectionCoefficients',
+'OpticalPixelRange': 'OpticalPixelRange',
+'Run': 'Run',
+'SaturationLevel': 'SaturationLevel',
+'SerialNumber': 'Instrument Serial Number',  # (Instrument Group)
+'TemperatureDetectorActual': 'TemperatureDetectorActual',  # (Instrument Settings Group)
+'TemperatureDetectorSet': 'TemperatureDetectorSet',
+'TemperatureHeatsink': 'TemperatureHeatsink',
+'TemperatureMicrocontroller': 'TemperatureMicrocontroller',
+'TemperaturePCB': 'TemperaturePCB',
+'TemperatureUnits': 'TemperatureUnits',
+'Type': 'Type',
+'WavelengthCalibrationCoefficients': 'WavelengthCalibrationCoefficients',
+'name': 'name'} # etc. # Check what is already specified in the DB, add missing ones
     
-    # Other metadata -should contain sublevel headings or No?
+    # Other metadata -should contain sublevel headings or No? 'Vegetation Biophysical Parameters'
     MAP_ANCIL_METADATA_SPECCHIONAME = {'Fluorescence', 'GS', 'Harvest', 'CN',
                     'HI', 'Height', 'LAI', 'SPAD', 'ThetaProbe',
                     'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH'} 
