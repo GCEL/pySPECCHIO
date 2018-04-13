@@ -166,7 +166,9 @@ class specchioDBinterface(object):
     
     def get_dummy_spectra(self):
         """Produce some dummy spectra for when uploading metadata only"""
-        pass
+        dummy_spectra
+        with open()
+    
     
     def get_test_spectra(self):
         """Get spectra from the test file spectra.csv"""
@@ -249,7 +251,20 @@ class specchioDBinterface(object):
                     self.specchio_client.getAttributesNameHash().get(
                             self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
             mp.setValue(ancil_metadata[spectra_index][ancildata_key])
-            smd.addEntry(mp)           
+            smd.addEntry(mp)  
+    
+    def specchio_upload_ancil_with_dummy_spectra(self, ancildir):
+        """Uploads ancillary metadata without spectra files.
+        
+        Creates a dummy spectra file at the plot level.
+        Plot level name can be taken from the dataframe rows...
+        
+        Attach metadata in subsequent columns to this dummy spectra.
+         
+        Upload to DB.
+        """
+        dummy_spectra_obj = sptypes.SpectralFile()
+        dummy_spectra_file = self.get_dummy_spectra()
 
     def specchio_upload_pico_spectra(self, spectrafile):
         """Upload the PICO type spectra.
@@ -294,7 +309,7 @@ class specchioDBinterface(object):
             #=-=-=-=-=-=
             smd = sptypes.Metadata()
             self.add_pico_metadata_for_spectra(smd, metadata, i)
-            self.add_ancillary_metadata_for_spectra(smd, metadata, i)
+            #self.add_ancillary_metadata_for_spectra(smd, metadata, i)
             spspectra_file_obj.addEavMetadata(smd)
 
         # Convert the spectra list to a suitable 
