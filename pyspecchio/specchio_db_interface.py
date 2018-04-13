@@ -273,12 +273,8 @@ class specchioDBinterface(object):
             # Metadata...FOR EACH SPECTRA (use dummy if needed)
             #=-=-=-=-=-=
             smd = sptypes.Metadata()
-            #mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Integration Time'))
-            #print(type(metadata[i]['IntegrationTime']))
-            #mp.setValue(metadata[i]['IntegrationTime'])
-            #smd.addEntry(mp)
             self.add_pico_metadata_for_spectra(smd, metadata, i)
-            #self.add_ancillary_metadata_for_spectra(smd, metadata)
+            self.add_ancillary_metadata_for_spectra(smd, metadata)
             spspectra_file_obj.addEavMetadata(smd)
 
         # Convert the spectra list to a suitable 
