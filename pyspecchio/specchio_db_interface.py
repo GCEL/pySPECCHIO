@@ -51,7 +51,7 @@ class specchioDBinterface(object):
     PICO_METADATA = [
         'Batch', 'Dark', 'Datetime', 'Direction',
         'IntegrationTime', 'IntegrationTimeUnits',
-        'NonlinearityCorrectionCoefficients',# 'OpticalPixelRange',
+        'NonlinearityCorrectionCoefficients', 'OpticalPixelRange',
         'Run', 'SaturationLevel', 'SerialNumber',
         'TemperatureDetectorActual', 'TemperatureDetectorSet',
         'TemperatureHeatsink', 'TemperatureMicrocontroller',
@@ -61,25 +61,25 @@ class specchioDBinterface(object):
     # Pico metadata name key to database descriptor name
     MAP_PICO_METADATA_SPECCHIONAME = {
         'Batch': 'Batch',
-        'Dark': 'Dark',   # Automatic Dark Correction? (Instrument Settings Group) (boolean)
+        'Dark': 'Dark',   # Automatic Dark Correction? (boolean)
         'Datetime': 'Datetime',
         'Direction': 'Direction',
-        'IntegrationTime': 'Integration Time',   # Existing (Instrument Settings Group)
+        'IntegrationTime': 'Integration Time',   
         'IntegrationTimeUnits': 'Integration Time Units',
         'NonlinearityCorrectionCoefficients': 'Nonlinearity Correction Coefficients', 
-        #'OpticalPixelRange': 'Optical Pixel Range',
+        'OpticalPixelRange': 'Optical Pixel Range',
         'Run': 'Run',
         'SaturationLevel': 'Saturation Level',
-        'SerialNumber': 'Instrument Serial Number',  # (Instrument Group)
-        'TemperatureDetectorActual': 'Temperature Detector Actual',  # (Instrument Settings Group)
+        'SerialNumber': 'Instrument Serial Number',  
+        'TemperatureDetectorActual': 'Temperature Detector Actual',  
         'TemperatureDetectorSet': 'Temperature Detector Set',
-        'TemperatureHeatsink': 'Temperature Heatsink',
-        'TemperatureMicrocontroller': 'Temperature Microcontroller',
-        'TemperaturePCB': 'Temperature PCB',
+        'TemperatureHeatsink': 'Temperature Detector Heatsink',
+        'TemperatureMicrocontroller': 'Temperature Detector Microcontroller',
+        'TemperaturePCB': 'Temperature Detector PCB',
         'TemperatureUnits': 'Temperature Units',
         'Type': 'Type',
         'WavelengthCalibrationCoefficients': 'Wavelength Calibration Coefficients',
-        'name': 'name'} # etc. # Check what is already specified in the DB, add missing ones
+        'name': 'name'} 
     
     # Other metadata -should contain sublevel headings or No? 'Vegetation Biophysical Parameters'
     MAP_ANCIL_METADATA_SPECCHIONAME = {'Fluorescence', 'GS', 'Harvest', 'CN',
@@ -181,14 +181,13 @@ class specchioDBinterface(object):
         return specp.get_spectra_pixels(spectra_num)
 
     def add_pico_metadata_for_spectra(self, smd, metadata, spectra_index):
-        """Adds the spectrometer-specific metadata to the spectra file"""
-        # Add plot number metaparameter
-        # TODO
-        #return # Gives null pointer (I think because of the keys missing from DB)
-        """
-        mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Datetime'))
-        mp.setValue(str(metadata[spectra_index]['Datetime']))
-        smd.addEntry(mp)
+        """Adds the spectrometer-specific metadata to the spectra file
+        
+        Todo: 
+            Deal better with null pointer exception.
+            How to handle 'null' unquoted value in pico data
+            Conversion of lists to comma separated string.
+            Add plot number metadata.
         """
         for metadata_key in self.PICO_METADATA:
 
@@ -208,9 +207,9 @@ class specchioDBinterface(object):
                     mp.setValue(str(metadata[spectra_index][metadata_key]))
                     smd.addEntry(mp)
                 except Exception as ex:
-                    print("Still Error: ", ex)
+                    print("Attempt at string conversion raised further excpetion: ", ex)
             except jp.JavaException as je:  # Usually a java null pointer exception
-                print("OOOPS!", je)
+                print("Warning:", je, self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key])
 
     def add_ancillary_metadata_for_spectra(self, smd, ancil_metadata, spectra_index):
         """Adds the 'other' anciliary metadata, e.g. LAI, Soils etc to the
