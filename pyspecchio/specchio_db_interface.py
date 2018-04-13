@@ -82,9 +82,11 @@ class specchioDBinterface(object):
         'name': 'name'} 
     
     # Other metadata -should contain sublevel headings or No? 'Vegetation Biophysical Parameters'
-    MAP_ANCIL_METADATA_SPECCHIONAME = {'Fluorescence', 'GS', 'Harvest', 'CN',
-                    'HI', 'Height', 'LAI', 'SPAD', 'ThetaProbe',
-                    'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH'} 
+    MAP_ANCIL_METADATA_SPECCHIONAME = {
+        'Fluorescence', 'GS', 'Harvest', 'CN',
+        'HI', 'Height', 'LAI', 'SPAD', 'ThetaProbe',
+        'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH'}
+
     def __init__(self, campaign_name):
         
         # Check JVm is up and running, set up a database client and connect 
