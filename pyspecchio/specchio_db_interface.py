@@ -179,7 +179,12 @@ class specchioDBinterface(object):
     def get_single_pico_spectra(self, spectra_num):
         """Gets a spectra from the PICO json spectra files"""
         return specp.get_spectra_pixels(spectra_num)
-
+    
+    def retrieve_metadata_from_hash(self, metadata_key):
+        mp = metaparam.newInstance(
+                self.specchio_client.getAttributesNameHash().get(
+                        self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
+        return mp
     def add_pico_metadata_for_spectra(self, smd, metadata, spectra_index):
         """Adds the spectrometer-specific metadata to the spectra file
         
@@ -192,18 +197,14 @@ class specchioDBinterface(object):
         for metadata_key in self.PICO_METADATA:
 
             try:
-                mp = metaparam.newInstance(
-                        self.specchio_client.getAttributesNameHash().get(
-                                self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
+                mp = self.retrieve_metadata_from_hash(metadata_key)
                 mp.setValue(metadata[spectra_index][metadata_key])
                 smd.addEntry(mp)
             except KeyError as ke:
                 print("Warning: key: ", ke, " is not in metadata for this spectra.")
             except RuntimeError as exc:     # Usually a java type conversion error
                 try:
-                    mp = metaparam.newInstance(
-                            self.specchio_client.getAttributesNameHash().get(
-                                    self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
+                    mp = self.retrieve_metadata_from_hash(metadata_key)
                     mp.setValue(str(metadata[spectra_index][metadata_key]))
                     smd.addEntry(mp)
                 except Exception as ex:
