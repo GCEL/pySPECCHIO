@@ -51,7 +51,7 @@ class specchioDBinterface(object):
     PICO_METADATA = [
         'Batch', 'Dark', 'Datetime', 'Direction',
         'IntegrationTime', 'IntegrationTimeUnits',
-        'NonlinearityCorrectionCoefficients', 'OpticalPixelRange',
+        'NonlinearityCorrectionCoefficients',# 'OpticalPixelRange',
         'Run', 'SaturationLevel', 'SerialNumber',
         'TemperatureDetectorActual', 'TemperatureDetectorSet',
         'TemperatureHeatsink', 'TemperatureMicrocontroller',
@@ -67,7 +67,7 @@ class specchioDBinterface(object):
         'IntegrationTime': 'Integration Time',   # Existing (Instrument Settings Group)
         'IntegrationTimeUnits': 'Integration Time Units',
         'NonlinearityCorrectionCoefficients': 'Nonlinearity Correction Coefficients', 
-        'OpticalPixelRange': 'Optical Pixel Range',
+        #'OpticalPixelRange': 'Optical Pixel Range',
         'Run': 'Run',
         'SaturationLevel': 'Saturation Level',
         'SerialNumber': 'Instrument Serial Number',  # (Instrument Group)
@@ -184,14 +184,34 @@ class specchioDBinterface(object):
         """Adds the spectrometer-specific metadata to the spectra file"""
         # Add plot number metaparameter
         # TODO
-        return # Gives null pointer (I think because of the keys missing from DB)
+        #return # Gives null pointer (I think because of the keys missing from DB)
+        """
+        mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Datetime'))
+        mp.setValue(str(metadata[spectra_index]['Datetime']))
+        smd.addEntry(mp)
+        """
         for metadata_key in self.PICO_METADATA:
-            mp = metaparam.newInstance(
-                    self.specchio_client.getAttributesNameHash().get(
-                            self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
-            mp.setValue(str(metadata[spectra_index][metadata_key]))
-            smd.addEntry(mp)
-    
+
+            try:
+                mp = metaparam.newInstance(
+                        self.specchio_client.getAttributesNameHash().get(
+                                self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
+                mp.setValue(metadata[spectra_index][metadata_key])
+                smd.addEntry(mp)
+            except KeyError as ke:
+                print("Warning: key: ", ke, " is not in metadata for this spectra.")
+            except RuntimeError as exc:     # Usually a java type conversion error
+                try:
+                    mp = metaparam.newInstance(
+                            self.specchio_client.getAttributesNameHash().get(
+                                    self.MAP_PICO_METADATA_SPECCHIONAME[metadata_key]))
+                    mp.setValue(str(metadata[spectra_index][metadata_key]))
+                    smd.addEntry(mp)
+                except Exception as ex:
+                    print("Still Error: ", ex)
+            except jp.JavaException as je:  # Usually a java null pointer exception
+                print("OOOPS!", je)
+
     def add_ancillary_metadata_for_spectra(self, smd, ancil_metadata, spectra_index):
         """Adds the 'other' anciliary metadata, e.g. LAI, Soils etc to the
         spectra file metadata. Most of this is not really specific metadata 
@@ -251,6 +271,10 @@ class specchioDBinterface(object):
             # Metadata...FOR EACH SPECTRA (use dummy if needed)
             #=-=-=-=-=-=
             smd = sptypes.Metadata()
+            #mp = metaparam.newInstance(self.specchio_client.getAttributesNameHash().get('Integration Time'))
+            #print(type(metadata[i]['IntegrationTime']))
+            #mp.setValue(metadata[i]['IntegrationTime'])
+            #smd.addEntry(mp)
             self.add_pico_metadata_for_spectra(smd, metadata, i)
             #self.add_ancillary_metadata_for_spectra(smd, metadata)
             spspectra_file_obj.addEavMetadata(smd)
