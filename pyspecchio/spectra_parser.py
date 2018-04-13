@@ -102,18 +102,6 @@ class spectra_metadata():
     def __init__(self):
         pass
 
-class TestSpectraParser(unittest.TestCase):
-    
-    def test_valid_sepctra(self):
-        sf = SpectraFile()
-        for x in range(0,4):
-            self.assertTrue(sf.valid_spectra(x))
-    
-    def test_invalid_spectra(self):
-        sf = SpectraFile()
-        for item in [1.5, "foobar", 7, -2]:
-            self.assertFalse(sf.valid_spectra(item))
-
 if __name__ == "__main__":
     unittest.main()
  
