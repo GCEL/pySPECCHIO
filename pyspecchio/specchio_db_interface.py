@@ -83,14 +83,29 @@ class specchioDBinterface(object):
     
     # Other metadata -should contain sublevel headings or No? 'Vegetation Biophysical Parameters'
     MAP_ANCIL_METADATA_SPECCHIONAME = {
-        'Fluorescence', 'GS', 'Harvest', 'CN',
-        'HI', 'Height', 'LAI', 'SPAD', 'ThetaProbe',
-        'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH'}
+        'Fluorescence': '', # Tricky to see how this will fit into SPECCHIO DB...
+        'GS':               ('Fertiliser_level', 'GS'),
+        # Harvest folder:
+        #=-=-=-=-=-=-=-=
+        'Harvest':  ('Fertiliser_level', 'Yield_TonnesPerHectare', 'TGW', 'FreshWeightKg', 'DryMatter%', 'no_in15g'),
+        'CN':       ('Fertiliser_level', 'N%', 'C%'),
+        'HI':       ('Fertiliser_level', 'StrawFreshWeight', 'StrawDryWeight', 'WholeEarWeight', 'GrainWeight', 'ChaffWeight', 'HI'),
+        #=-=-=-=-=-=-=-=
+        'Height':       ('Fertiliser_level', 'Height1', 'Height2', 'Height3', 'Height4', 'Height5', 'Plot_height'),
+        'LAI': '',      # Also tricky to incorporate as it is almost a database in itself.
+        'SPAD':         ('Fertiliser_level', 'SPAD1', 'SPAD2', 'SPAD3', 'SPAD4', 'SPAD5', 'SPAD6', 'SPAD7', 'SPAD8', 'SPAD9', 'SPAD10', 'Plot_Average'),
+        'ThetaProbe':   ('Fertiliser_level', 'Moisture1', 'Moisture2', 'Moisture3', 'Moisture4', 'Moisture5', 'Plot Moisture'), 
+        # Soils Folder
+        'NitrateAmmonia': ('Fertiliser_level', 'NO2NO3mgperlN', 'AmmoniamgperlN'),
+        'ResinExtracts':  ('Fertiliser_level', 'Ammonia_set1', 'Nitrate_set1'),
+        'Moisture':       ('Fertiliser_level', 'Moisture%g/g'),
+        'pH':             ('Fertiliser_level', 'pH')}
 
     def __init__(self, campaign_name):
-        
-        # Check JVm is up and running, set up a database client and connect 
-        # to the server
+        """
+        Check JVM is up and running, set up a database client and connect 
+        to the server.
+        """
         init_jvm()
         self.campaign_name = campaign_name
         client_factory = spclient.SPECCHIOClientFactory.getInstance()
@@ -176,7 +191,11 @@ class specchioDBinterface(object):
         """
         Gets all the dataframes from the ancillary data.
         """
-        return
+        pass
+    
+    def map_pico_spectrafile_to_plotID(self):
+        """Gets the PlotID from the pico file...somehow"""
+        pass
 
     def get_single_pico_spectra(self, spectra_num):
         """Gets a spectra from the PICO json spectra files"""
@@ -228,7 +247,7 @@ class specchioDBinterface(object):
             mp = metaparam.newInstance(
                     self.specchio_client.getAttributesNameHash().get(
                             self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
-            mp.setValue(str(ancil_metadata[spectra_index][ancildata_key]))
+            mp.setValue(ancil_metadata[spectra_index][ancildata_key])
             smd.addEntry(mp)           
 
     def specchio_upload_pico_spectra(self, spectrafile):
@@ -274,7 +293,7 @@ class specchioDBinterface(object):
             #=-=-=-=-=-=
             smd = sptypes.Metadata()
             self.add_pico_metadata_for_spectra(smd, metadata, i)
-            self.add_ancillary_metadata_for_spectra(smd, metadata)
+            self.add_ancillary_metadata_for_spectra(smd, metadata, i)
             spspectra_file_obj.addEavMetadata(smd)
 
         # Convert the spectra list to a suitable 
