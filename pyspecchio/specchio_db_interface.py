@@ -15,6 +15,7 @@ import pandas as pd
 import unittest
 
 import spectra_parser as specp
+import parser_pandas as pan
 
 def init_jvm(jvmpath=None):
     """
@@ -191,7 +192,7 @@ class specchioDBinterface(object):
         """
         Gets all the dataframes from the ancillary data.
         """
-        pass
+        return pan.extract_dataframes(ancildatadir)
     
     def map_pico_spectrafile_to_plotID(self):
         """Gets the PlotID from the pico file...somehow"""
