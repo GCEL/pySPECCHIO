@@ -48,36 +48,38 @@ class specchioDBinterface(object):
     """Object to manage interations with the SPECCHIO db and handle uplodas 
     from pandas dataframes"""
     
-    PICO_METADATA = ['Batch', 'Dark', 'Datetime', 'Direction',
-                     'IntegrationTime', 'IntegrationTimeUnits',
-                     'NonlinearityCorrectionCoefficients', 'OpticalPixelRange',
-                     'Run', 'SaturationLevel', 'SerialNumber',
-                     'TemperatureDetectorActual', 'TemperatureDetectorSet',
-                     'TemperatureHeatsink', 'TemperatureMicrocontroller',
-                     'TemperaturePCB', 'TemperatureUnits', 'Type',
-                     'WavelengthCalibrationCoefficients', 'name']
+    PICO_METADATA = [
+        'Batch', 'Dark', 'Datetime', 'Direction',
+        'IntegrationTime', 'IntegrationTimeUnits',
+        'NonlinearityCorrectionCoefficients', 'OpticalPixelRange',
+        'Run', 'SaturationLevel', 'SerialNumber',
+        'TemperatureDetectorActual', 'TemperatureDetectorSet',
+        'TemperatureHeatsink', 'TemperatureMicrocontroller',
+        'TemperaturePCB', 'TemperatureUnits', 'Type',
+        'WavelengthCalibrationCoefficients', 'name']
     
     # Pico metadata name key to database descriptor name
-    MAP_PICO_METADATA_SPECCHIONAME = {'Batch': 'Batch',
-'Dark': 'Dark',   # Automatic Dark Correction? (Instrument Settings Group) (boolean)
-'Datetime': 'Datetime',
-'Direction': 'Direction',
-'IntegrationTime': 'Integration Time',   # Existing (Instrument Settings Group)
-'IntegrationTimeUnits': 'IntegrationTimeUnits',
-'NonlinearityCorrectionCoefficients': 'NonlinearityCorrectionCoefficients',
-'OpticalPixelRange': 'OpticalPixelRange',
-'Run': 'Run',
-'SaturationLevel': 'SaturationLevel',
-'SerialNumber': 'Instrument Serial Number',  # (Instrument Group)
-'TemperatureDetectorActual': 'TemperatureDetectorActual',  # (Instrument Settings Group)
-'TemperatureDetectorSet': 'TemperatureDetectorSet',
-'TemperatureHeatsink': 'TemperatureHeatsink',
-'TemperatureMicrocontroller': 'TemperatureMicrocontroller',
-'TemperaturePCB': 'TemperaturePCB',
-'TemperatureUnits': 'TemperatureUnits',
-'Type': 'Type',
-'WavelengthCalibrationCoefficients': 'WavelengthCalibrationCoefficients',
-'name': 'name'} # etc. # Check what is already specified in the DB, add missing ones
+    MAP_PICO_METADATA_SPECCHIONAME = {
+        'Batch': 'Batch',
+        'Dark': 'Dark',   # Automatic Dark Correction? (Instrument Settings Group) (boolean)
+        'Datetime': 'Datetime',
+        'Direction': 'Direction',
+        'IntegrationTime': 'Integration Time',   # Existing (Instrument Settings Group)
+        'IntegrationTimeUnits': 'Integration Time Units',
+        'NonlinearityCorrectionCoefficients': 'Nonlinearity Correction Coefficients', 
+        'OpticalPixelRange': 'Optical Pixel Range',
+        'Run': 'Run',
+        'SaturationLevel': 'Saturation Level',
+        'SerialNumber': 'Instrument Serial Number',  # (Instrument Group)
+        'TemperatureDetectorActual': 'Temperature Detector Actual',  # (Instrument Settings Group)
+        'TemperatureDetectorSet': 'Temperature Detector Set',
+        'TemperatureHeatsink': 'Temperature Heatsink',
+        'TemperatureMicrocontroller': 'Temperature Microcontroller',
+        'TemperaturePCB': 'Temperature PCB',
+        'TemperatureUnits': 'Temperature Units',
+        'Type': 'Type',
+        'WavelengthCalibrationCoefficients': 'Wavelength Calibration Coefficients',
+        'name': 'name'} # etc. # Check what is already specified in the DB, add missing ones
     
     # Other metadata -should contain sublevel headings or No? 'Vegetation Biophysical Parameters'
     MAP_ANCIL_METADATA_SPECCHIONAME = {'Fluorescence', 'GS', 'Harvest', 'CN',
