@@ -17,10 +17,11 @@ dataframes = {}
 # Names of soil sheets in the Soils directory
 SOILS_SUBTABLES = ('Moisture', 'ResinExtracts', 'pH', 'NitrateAmmonia')
 
-# Expected names of ancil data 
+# Expected names of ancil data
 ANCIL_DATA_NAMES = ('Fluorescence', 'GS', 'Harvest', 'CN', 'HI', 'Height',
                     'LAI', 'SPAD', 'ThetaProbe',
                     'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH')
+
 
 def file_and_dict_name(dirname, fname):
     filefullname = os.path.join(dirname, fname)
@@ -51,9 +52,10 @@ def extract_dataframes(directory):
 def extract_excel_format(filefullname, dictname):
     dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
     if 'Fluorescence' in dictname:
-        upper_header = pd.MultiIndex.from_product([['Sample1', 'Sample2', 
-        'Sample3', 'Sample4', 'Sample5', 'PlotAverage'],
-        ['Fo', 'Fv', 'Fm', 'Fv/Fm', 'Fv/Fo']])
+        upper_header = pd.MultiIndex.from_product(
+            [['Sample1', 'Sample2',
+                'Sample3', 'Sample4', 'Sample5', 'PlotAverage'],
+                ['Fo', 'Fv', 'Fm', 'Fv/Fm', 'Fv/Fo']])
         new_header = dataframes[dictname].columns[0:3].union(upper_header)
         dataframes[dictname].columns = new_header
     if dictname in dataframes:
@@ -99,6 +101,7 @@ def generate_goodPRNline(filename):
 def extract_PRN_header_info():
     pass
 
+
 def read_PRN_to_dataframe():
     pass
 
@@ -109,14 +112,14 @@ class PRNdata(object):
 
 
 class TestParser(unittest.TestCase):
-    
-    #DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
-    #DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
+
+    # DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
+    # DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
     DATADIR = "/home/centos/Python/test/DATA/"
-    
-    #TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
+
+    # TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
     #                "ES_F1_2017/plot_scale_data/LAI/")
-    #TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
+    # TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
     #                "ES_F1_2017/plot_scale_data/LAI/")
     TEST_PRN_DIR = ("/home/centos/Python/test/DATA/ES/field_scale/"
                     "ES_F1_2017/plot_scale_data/LAI/")
