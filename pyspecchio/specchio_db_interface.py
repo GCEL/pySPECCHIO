@@ -3,7 +3,7 @@
 """
 Created on Mon Feb 26 09:54:34 2018
 
-@author: centos
+@author: Declan Valters
 """
 
 import jpype as jp

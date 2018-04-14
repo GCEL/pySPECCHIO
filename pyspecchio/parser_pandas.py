@@ -3,6 +3,8 @@
 This submodule will parse the raw excel/csv/text files into pandas dataframes
 first. Before another module will extract from the dataframes and load into
 the database
+
+@author Declan Valters
 """
 
 import os
