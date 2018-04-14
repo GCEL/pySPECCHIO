@@ -294,6 +294,19 @@ class specchioDBinterface(object):
         dummy_spectra_obj = sptypes.SpectralFile()
         dummy_spectra_file = self.get_dummy_spectra()
 
+        """
+        Logic:
+          Dummy pico file created from plot name (and date?)
+          but plot name is in the pandas dataframe from each ancil.
+          So, loop through each dataframe, pop off the date and append it to
+          the first row plot name - this is your dummy spectra name for the
+          dummy pico file to write out.
+
+          Now create the usual spectra file object data
+
+          Upload the metdata **to this dummy file** in the ususal way.
+        """
+
     def specchio_upload_pico_spectra(self, spectrafile):
         """Upload the PICO type spectra.
 
