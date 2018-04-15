@@ -15,7 +15,7 @@ import pandas as pd
 import unittest
 
 import spectra_parser as specp
-import parser_pandas as pan
+import parser_pandas as ancildata
 
 
 def init_jvm(jvmpath=None):
@@ -140,8 +140,10 @@ class specchioDBinterface(object):
         self.campaign.setId(self.c_id)
 
     def read_metadata(self, filename):
-        """ Reads the example metadata csv file and returns a pandas dataframe"""
-        # Read in the csv, transposing it because the names are actually in the 1st column
+        """ Reads the example metadata csv file and returns a pandas dataframe
+        Read in the csv, transposing it because the names are actually
+        in the 1st column.
+        """
         df = pd.read_csv(filename, header=None).transpose()
         # Now use the transposed 1st row to create the column names
         df.columns = df.iloc[0]
@@ -185,7 +187,7 @@ class specchioDBinterface(object):
             metadata = self.read_metadata(filepath + "metadata.csv")
             return wavelengths, spectra, metadata
 
-    def get_dummy_spectra(self):
+    def get_dummy_spectra_file(self):
         """Produce some dummy spectra for when uploading metadata only"""
         dummy_spectra = None
         with open(dummy_spectra) as df:
@@ -216,7 +218,7 @@ class specchioDBinterface(object):
         """
         Gets all the dataframes from the ancillary data.
         """
-        return pan.extract_dataframes(ancildatadir)
+        return ancildata.extract_dataframes(ancildatadir)
 
     def map_pico_spectrafile_to_plotID(self):
         """Gets the PlotID from the pico file...somehow"""
@@ -291,8 +293,9 @@ class specchioDBinterface(object):
 
         Upload to DB.
         """
+
         dummy_spectra_obj = sptypes.SpectralFile()
-        dummy_spectra_file = self.get_dummy_spectra()
+        dummy_spectra_file = self.get_dummy_spectra_file()
 
         """
         Logic:
