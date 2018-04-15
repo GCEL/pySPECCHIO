@@ -7,12 +7,8 @@ Created on Mon Feb 26 09:54:34 2018
 """
 
 import jpype as jp
-import time
-import unittest
 import numpy as np
 import pandas as pd
-
-import unittest
 
 import spectra_parser as specp
 import ancildata_parser as ancilparser

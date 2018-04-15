@@ -9,7 +9,6 @@ the database
 
 import os
 import re
-import unittest
 import warnings
 import pandas as pd
 
@@ -130,7 +129,3 @@ def read_PRN_to_dataframe():
 class PRNdata(object):
     """Class that defines the data in a PRN file"""
     pass
-
-
-if __name__ == '__main__':
-    unittest.main()

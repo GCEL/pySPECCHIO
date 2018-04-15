@@ -13,8 +13,6 @@ import json
 import pandas as pd
 from pandas.io.json import json_normalize
 
-import unittest
-
 
 class SpectraFile(object):
     def __init__(self, spectrafile, spectrapath):
@@ -106,7 +104,6 @@ class spectra_metadata():
         pass
 
 if __name__ == "__main__":
-    unittest.main()
 
     path = '/home/centos/Downloads/'
     filename = 'spectra.csv'
