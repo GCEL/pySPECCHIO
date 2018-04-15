@@ -24,10 +24,15 @@ ANCIL_DATA_NAMES = ('Fluorescence', 'GS', 'Harvest', 'CN', 'HI', 'Height',
                     'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH')
 
 
-def file_and_dict_name(dirname, fname):
+def file_and_dict_name(directory, dirname, fname):
     filefullname = os.path.join(dirname, fname)
     # Get a list of the subdirs, then get the field name folder
+    # subtract dirname rfom directory!
+    print(directory)
+    print(dirname)
     site_code = os.path.relpath(dirname).split(os.path.sep)[3]
+    print(os.path.relpath(dirname).split(os.path.sep))
+    print(site_code)
     # Take off the year bit, as it is also in the filename later
     site_code = site_code[:-4]
     dictname = site_code + os.path.splitext(os.path.basename(fname))[0]
@@ -41,12 +46,12 @@ def extract_dataframes(directory):
             if re.match("^(?![~$]).*.xlsx$", fname):
                 # Could be try blocks here:
                 try:
-                    extract_excel_format(*file_and_dict_name(dirname, fname))
+                    extract_excel_format(*file_and_dict_name(directory, dirname, fname))
                 except ImportError:
                     print("You must have the xlrd python module installed"
                           "...Skipping " + fname)
             if re.match("^(?![~$]).*.PRN$", fname):
-                extract_PRN_format(*file_and_dict_name(dirname, fname))
+                extract_PRN_format(*file_and_dict_name(directory, dirname, fname))
     return dataframes
 
 
@@ -100,7 +105,7 @@ def generate_goodPRNline(filename):
 
 
 def get_date_from_df_key(df):
-    return df.key().split('_')[0]
+    return df.split('_')[2]
 
 
 # I don't think this function should go in this module, but ok for now...

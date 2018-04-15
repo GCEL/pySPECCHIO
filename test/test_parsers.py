@@ -28,9 +28,14 @@ class testSpectraParser(unittest.TestCase):
 
 class testAncilParser(unittest.TestCase):
 
-    DATADIR = "test/DATA/"
-    TEST_PRN_DIR = ("test/DATA/ES/field_scale/"
-                    "ES_F1_2017/plot_scale_data/LAI/")
+    import os
+
+    DATADIR = os.path.join(os.path.abspath("test/DATA/"), '')
+    TEST_PRN_DIR = os.path.join(os.path.abspath("test/DATA/ES/field_scale/"
+                                "ES_F1_2017/plot_scale_data/LAI/"), '')
+
+    def test_dataframes_extacted(self):
+        self.assertIsNotNone(adp.extract_dataframes(self.DATADIR))
 
     def test_correct_files_parsed(self):
 
@@ -73,7 +78,11 @@ class testAncilParser(unittest.TestCase):
 
     def test_get_date_from_df_dict(self):
         """Test the date stripper"""
+        import re
+        pattern = "^[0-9]{8,8}$"
         dfs = adp.extract_dataframes(self.DATADIR)
+        date = adp.get_date_from_df_key(dfs.keys()[0])
+        self.assertIsNotNone(re.match(pattern, date))
 
 if __name__ == '__main__':
     unittest.main()
