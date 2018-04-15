@@ -293,6 +293,7 @@ class specchioDBinterface(object):
 
         Upload to DB.
         """
+        ancil_data = self.get_all_ancil_metadata(ancildir)
 
         dummy_spectra_obj = sptypes.SpectralFile()
         dummy_spectra_file = self.get_dummy_spectra_file()
@@ -448,12 +449,14 @@ if __name__ == "__main__":
 
     # filepath = '/home/centos/Downloads/'
     # filename = 'spectra.csv'
+    ancil_testpath = "../test/DATA/"
 
     spectra_testpath = "/home/centos/Downloads/DATA/Spectra_dir/"
     spectra_file_test = "QEP1USB1_b000000_s000002_light.pico"
 
     subhierarchy = 'PlotScale'
     # Create a file object to handle parsing of the files.
-    spectrafile = specp.SpectraFile(spectra_file_test, spectra_testpath)
+    # spectrafile = specp.SpectraFile(spectra_file_test, spectra_testpath)
     # Create an interface object to handling interfaceing with SPECCHIO
-    db_interface.specchio_upload_pico_spectra(spectrafile)
+    # db_interface.specchio_upload_pico_spectra(spectrafile)
+    db_interface.specchio_upload_ancil_with_dummy_spectra(ancil_testpath)

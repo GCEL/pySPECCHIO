@@ -100,6 +100,25 @@ def generate_goodPRNline(filename):
                 yield line
 
 
+def get_date_from_df_key(df):
+    return df.key().split('_')[0]
+
+
+# I don't think this function should go in this module, but ok for now...
+def generate_dummy_spectra_for_ancil(dataframes):
+    """
+    Logic:
+      Dummy pico file created from plot name (and date?)
+      but plot name is in the pandas dataframe from each ancil.
+      So, loop through each dataframe, pop off the date and append it to
+      the first row plot name - this is your dummy spectra name for the
+      dummy pico file to write out.
+    """
+    for df in dataframes:
+        # Get the date from the first part of the dict name before the '_'
+        datestr = get_date_from_df_key(df)
+
+
 def extract_PRN_header_info():
     pass
 
@@ -115,15 +134,8 @@ class PRNdata(object):
 
 class TestParser(unittest.TestCase):
 
-    # DATADIR = "/home/dav/SPECCHIO-QGIS-python/DATA/"
-    # DATADIR = "/home/dvalters/Projects/SPECCHIO/DATA/"
-    DATADIR = "/home/centos/Python/test/DATA/"
-
-    # TEST_PRN_DIR = ("/home/dav/SPECCHIO-QGIS-python/DATA/ES/field_scale/"
-    #                "ES_F1_2017/plot_scale_data/LAI/")
-    # TEST_PRN_DIR = ("/home/dvalters/Projects/SPECCHIO/DATA/ES/field_scale/"
-    #                "ES_F1_2017/plot_scale_data/LAI/")
-    TEST_PRN_DIR = ("/home/centos/Python/test/DATA/ES/field_scale/"
+    DATADIR = "../test/DATA/"
+    TEST_PRN_DIR = ("../test/DATA/ES/field_scale/"
                     "ES_F1_2017/plot_scale_data/LAI/")
 
     def test_correct_files_parsed(self):
@@ -163,6 +175,10 @@ class TestParser(unittest.TestCase):
                 next(reader)
             except StopIteration:
                 break
+
+    def test_get_date_from_df_dict(self):
+        """Test the date stripper"""
+        dfs = extract_dataframes(self.DATADIR)
 
 if __name__ == '__main__':
     unittest.main()
