@@ -132,53 +132,5 @@ class PRNdata(object):
     pass
 
 
-class TestParser(unittest.TestCase):
-
-    DATADIR = "../test/DATA/"
-    TEST_PRN_DIR = ("../test/DATA/ES/field_scale/"
-                    "ES_F1_2017/plot_scale_data/LAI/")
-
-    def test_correct_files_parsed(self):
-
-        BAD_STRINGS = ['$', '~', 'csv', 'xls']
-
-        dfs = extract_dataframes(self.DATADIR)
-        # Could be the other way round I suppose...
-        for bad_string in BAD_STRINGS:
-            self.assertFalse(any(bad_string in key for key in dfs.keys()))
-
-    def test_PRN_parsing_columns(self):
-        """PRN data should have nine columns if correctly ingested"""
-        filefullname = self.TEST_PRN_DIR + "20170714_LAI.PRN"
-        extract_PRN_format(filefullname, "TEST_PRN_dict")
-        self.assertEqual(len(dataframes['TEST_PRN_dict'].columns), 9)
-
-    def test_PRN_parsing_rows(self):
-        """PRN data should have 261 rows if correctly ingested"""
-        filefullname = self.TEST_PRN_DIR + "20170714_LAI.PRN"
-        extract_PRN_format(filefullname, "TEST_PRN_dict")
-        self.assertEqual(len(dataframes['TEST_PRN_dict']), 261)
-
-    def test_PRN_line(self):
-        """Test a line has been correctly parsed"""
-        filefullname = self.TEST_PRN_DIR + "20170714_LAI.PRN"
-        extract_PRN_format(filefullname, "TEST_PRN_dict")
-
-        df_line = dataframes['TEST_PRN_dict'].loc[0]
-
-    def test_generate_PRN_lines(self):
-        """Test that we can strip and print the PRN text file lines.
-        Print statement around next() is removed now."""
-        reader = generate_goodPRNline(self.TEST_PRN_DIR + "20170714_LAI.PRN")
-        while True:
-            try:
-                next(reader)
-            except StopIteration:
-                break
-
-    def test_get_date_from_df_dict(self):
-        """Test the date stripper"""
-        dfs = extract_dataframes(self.DATADIR)
-
 if __name__ == '__main__':
     unittest.main()
