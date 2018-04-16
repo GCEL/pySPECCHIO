@@ -340,20 +340,24 @@ class specchioDBinterface(object):
                 smd = sptypes.Metadata()
                 dummy_spectrafile_obj.addSpectrumFilename(dummy_pico_name)
 
-                category =
-                # Get column by row
-                for colname in self.MAP_ANCIL_METADATA_SPECCHIONAME[category]:
-                    assert(colname in self.MAP_ANCIL_METADATA_SPECCHIONAME)
+                category = ancilparser.get_category_from_df_key(df)
+                subcateogries = self.MAP_ANCIL_METADATA_SPECCHIONAME[category]
+
+                for subcategory in subcateogries:
+                    value = row[subcategory]
                     """
                     Now each column header is a metadata key. It must be added
                     to each spectra file. PlotID + date.
+
+                    Pop off the value from the row by indexing using the
+                    subcategory in the class dictionary.
                     """
                     mp = metaparam.newInstance(
                         self.specchio_client.getAttributesNameHash().get(
-                        self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
-                    mp.setValue(ancil_metadata[spectra_index][ancildata_key])
+                            subcategory))
+                    mp.setValue(value)
                     smd.addEntry(mp)
-                # self.add_ancillary_metadata_for_dummyspectra(smd, metadata)
+
                 """check we are not overwriting spectra files somehow"""
 
     def specchio_upload_pico_spectra(self, spectrafile):
