@@ -24,12 +24,12 @@ ANCIL_DATA_NAMES = ('Fluorescence', 'GS', 'Harvest', 'CN', 'HI', 'Height',
                     'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH')
 
 
-def file_and_dict_name(directory, dirname, fname):
+def file_and_dict_name(dirname, subdirs, fname):
     filefullname = os.path.join(dirname, fname)
     # Get a list of the subdirs, then get the field name folder
     # subtract dirname rfom directory!
-    print(directory)
     print(dirname)
+    print(subdirs)
     site_code = os.path.relpath(dirname).split(os.path.sep)[3]
     print(os.path.relpath(dirname).split(os.path.sep))
     print(site_code)
@@ -46,12 +46,12 @@ def extract_dataframes(directory):
             if re.match("^(?![~$]).*.xlsx$", fname):
                 # Could be try blocks here:
                 try:
-                    extract_excel_format(*file_and_dict_name(directory, dirname, fname))
+                    extract_excel_format(*file_and_dict_name(dirname, subdirs, fname))
                 except ImportError:
                     print("You must have the xlrd python module installed"
                           "...Skipping " + fname)
             if re.match("^(?![~$]).*.PRN$", fname):
-                extract_PRN_format(*file_and_dict_name(directory, dirname, fname))
+                extract_PRN_format(*file_and_dict_name(dirname, subdirs, fname))
     return dataframes
 
 
