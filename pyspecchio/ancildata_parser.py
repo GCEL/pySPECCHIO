@@ -23,6 +23,33 @@ ANCIL_DATA_NAMES = ('Fluorescence', 'GS', 'Harvest', 'CN', 'HI', 'Height',
                     'LAI', 'SPAD', 'ThetaProbe',
                     'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH')
 
+DUMMY_PICO_SPECTRA = """{    
+ "SequenceNumber": 0, 
+ "Spectra": [
+  {
+   "Metadata": {
+    "Batch": 0, 
+    "Dark": false, 
+    "Datetime": "2000-01-00T00:00:00.000000Z", 
+    "Direction": "none", 
+    "IntegrationTime": 0.0, 
+    "IntegrationTimeUnits": "none", 
+    "NonlinearityCorrectionCoefficients": [0], 
+    "OpticalPixelRange": [0], 
+    "Run": "dummy", 
+    "SaturationLevel": 0, 
+    "SerialNumber": "QEP01651", 
+    "TemperatureDetectorActual": 0.0, 
+    "TemperatureDetectorSet": 0.0, 
+    "TemperatureHeatsink": null, 
+    "TemperatureMicrocontroller": 0.0, 
+    "TemperaturePCB": 0.0, 
+    "TemperatureUnits": "degrees Celcius", 
+    "Type": "light", 
+    "WavelengthCalibrationCoefficients": [0], 
+    "name": "none"
+   },
+   "Pixels": [0] }}"""
 
 def file_and_dict_name(datadir, curdirname, fname):
     filefullname = os.path.join(curdirname, fname)
@@ -118,8 +145,11 @@ def generate_dummy_spectra_for_ancil(dataframes):
       dummy pico file to write out.
     """
     plot_ids = set()
+    pico_dir = "./picotest/"
     
-    
+    if not os.path.isdir(pico_dir):
+        os.mkdir(pico_dir)
+
     for df in dataframes:
         # Get the date from the first part of the dict name before the '_'
         if 'LAI' in df:  # Odd format from PRN files
@@ -127,9 +157,17 @@ def generate_dummy_spectra_for_ancil(dataframes):
         datestr = get_date_from_df_key(df)
         for index, row in dataframes[df].iterrows():
             # Row should have the plot name
-            print(row[0])
-            plot_ids.add(row[0] + '_' + datestr)
-    print(plot_ids)
+            plot_id_name = row[0] + '_' + datestr
+            plot_ids.add(plot_id_name)
+            
+            dummy_pico_name = plot_id_name + ".pico"
+            # Don't create new dummy files if ones alreadt exist!
+            if not os.path.exists(pico_dir + dummy_pico_name):
+                # Write a new dummy pico file
+                with open(pico_dir + dummy_pico_name, "w") as dummypico:
+                    dummypico.writelines(DUMMY_PICO_SPECTRA)
+        
+    
 
 
 def extract_PRN_header_info():
