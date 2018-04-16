@@ -294,9 +294,10 @@ class specchioDBinterface(object):
         Attach metadata in subsequent columns to this dummy spectra.
 
         Upload to DB.
-        """
-        ancil_data = self.get_all_ancil_metadata(ancildir)
-        """
+
+        Args:
+          ancildir: top-level directory containing the data.
+
         Logic:
           Dummy pico file created from plot name (and date?)
           but plot name is in the pandas dataframe from each ancil.
@@ -307,19 +308,25 @@ class specchioDBinterface(object):
           Now create the usual spectra file object data
 
           Upload the metdata **to this dummy file** in the ususal way.
+
+
+          Check given date for new files...
+          Check file modification time. etc..
+
         """
+        ancil_data = self.get_all_ancil_metadata(ancildir)
         plot_ids = set()
         pico_dir = "./picotest/"
 
         for df in ancil_data:
-            # Get the date from the first part of the dict name before the '_'
-
             if 'LAI' in df:  # Odd format from PRN files
                 break
             category = ancilparser.get_category_from_df_key(df)
             datestr = ancilparser.get_date_from_df_key(df)
+
+            # Loop through the rows in each dataframe
             for index, row in ancil_data[df].iterrows():
-                # Row should have the plot name
+                # We need to create a unique name for each dummy spectra
                 plot_id_name = row[0] + '_' + datestr
                 plot_ids.add(plot_id_name)
                 dummy_pico_name = plot_id_name + ".pico"
