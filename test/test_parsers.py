@@ -83,7 +83,8 @@ class testAncilParser(unittest.TestCase):
         dfs = adp.extract_dataframes(self.DATADIR)
         # For Python 3, df.keys() returns iterable, not list
         # For Python 2, already a list
-        date = adp.get_date_from_df_key(list(dfs.keys())[0])
+        # Note, [0] is the test dict and contains no date!
+        date = adp.get_date_from_df_key(list(dfs.keys())[1])
         self.assertIsNotNone(re.match(pattern, date))
 
 if __name__ == '__main__':

@@ -24,18 +24,18 @@ ANCIL_DATA_NAMES = ('Fluorescence', 'GS', 'Harvest', 'CN', 'HI', 'Height',
                     'NitrateAmmonia', 'ResinExtracts', 'Moisture', 'pH')
 
 
-def file_and_dict_name(dirname, subdirs, fname):
-    filefullname = os.path.join(dirname, fname)
+def file_and_dict_name(datadir, curdirname, fname):
+    filefullname = os.path.join(curdirname, fname)
     # Get a list of the subdirs, then get the field name folder
     # subtract dirname rfom directory!
-    print(dirname)
-    print(subdirs)
-    site_code = os.path.relpath(dirname).split(os.path.sep)[3]
-    print(os.path.relpath(dirname).split(os.path.sep))
-    print(site_code)
+    parentdirs = os.path.commonprefix([datadir, curdirname])
+    enddir = curdirname.split(parentdirs)[1]
+    site_code = enddir.split(os.path.sep)[2]
+
     # Take off the year bit, as it is also in the filename later
     site_code = site_code[:-4]
     dictname = site_code + os.path.splitext(os.path.basename(fname))[0]
+    print(site_code, dictname)
     return (filefullname, dictname)
 
 
@@ -46,12 +46,12 @@ def extract_dataframes(directory):
             if re.match("^(?![~$]).*.xlsx$", fname):
                 # Could be try blocks here:
                 try:
-                    extract_excel_format(*file_and_dict_name(dirname, subdirs, fname))
+                    extract_excel_format(*file_and_dict_name(directory, dirname, fname))
                 except ImportError:
                     print("You must have the xlrd python module installed"
                           "...Skipping " + fname)
             if re.match("^(?![~$]).*.PRN$", fname):
-                extract_PRN_format(*file_and_dict_name(dirname, subdirs, fname))
+                extract_PRN_format(*file_and_dict_name(directory, dirname, fname))
     return dataframes
 
 
