@@ -10,6 +10,7 @@ or pandas
 """
 
 import json
+import os
 import pandas as pd
 from pandas.io.json import json_normalize
 
@@ -96,6 +97,58 @@ class SpectraFile(object):
         # File format has spectra which contains a list of dicts:
         # Metadata [0] and Pixels [1]
         return whole_file['Spectra'][spectra_number]['Pixels']
+
+class DummySpectraFile(SpectraFile):
+    """Class that contains dummy spectra for when Metadata have no assoc.
+    pico file but need to be inserted into SPECCHIO.
+    """
+    DUMMY_PICO_SPECTRA = """{    
+ "SequenceNumber": 0, 
+ "Spectra": [
+  {
+   "Metadata": {
+    "Batch": 0, 
+    "Dark": false, 
+    "Datetime": "2000-01-00T00:00:00.000000Z", 
+    "Direction": "none", 
+    "IntegrationTime": 0.0, 
+    "IntegrationTimeUnits": "none", 
+    "NonlinearityCorrectionCoefficients": [0], 
+    "OpticalPixelRange": [0], 
+    "Run": "dummy", 
+    "SaturationLevel": 0, 
+    "SerialNumber": "QEP01651", 
+    "TemperatureDetectorActual": 0.0, 
+    "TemperatureDetectorSet": 0.0, 
+    "TemperatureHeatsink": null, 
+    "TemperatureMicrocontroller": 0.0, 
+    "TemperaturePCB": 0.0, 
+    "TemperatureUnits": "degrees Celcius", 
+    "Type": "light", 
+    "WavelengthCalibrationCoefficients": [0], 
+    "name": "none"
+   },
+   "Pixels": [0] }}"""
+   
+    def __init__(self, dummyspecfile, dummyspecpath):
+        self.dummyfile = dummyspecfile
+        self.dummspecpath = dummyspecpath
+        self.generate_dummy_spectra_for_ancil(self.dummspecpath, self.dummyfile)
+
+    def get_date_from_df_key(self, df):
+        return df.split('_')[2]
+
+    @classmethod
+    def generate_dummy_spectra_for_ancil(self, pico_dir, dummy_pico_name):
+        """Write dummy spectra files to disk"""
+        if not os.path.isdir(pico_dir):
+            os.mkdir(pico_dir)
+        if not os.path.exists(pico_dir + dummy_pico_name):
+            with open(pico_dir + dummy_pico_name, "w") as dummypico:
+                dummypico.writelines(self.DUMMY_PICO_SPECTRA)       
+    
+    def get_dummy_pico_name(self):
+        pass
 
 
 class spectra_metadata():

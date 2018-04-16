@@ -134,42 +134,6 @@ def get_date_from_df_key(df):
     return df.split('_')[2]
 
 
-# I don't think this function should go in this module, but ok for now...
-def generate_dummy_spectra_for_ancil(dataframes):
-    """
-    Logic:
-      Dummy pico file created from plot name (and date?)
-      but plot name is in the pandas dataframe from each ancil.
-      So, loop through each dataframe, pop off the date and append it to
-      the first row plot name - this is your dummy spectra name for the
-      dummy pico file to write out.
-    """
-    plot_ids = set()
-    pico_dir = "./picotest/"
-    
-    if not os.path.isdir(pico_dir):
-        os.mkdir(pico_dir)
-
-    for df in dataframes:
-        # Get the date from the first part of the dict name before the '_'
-        if 'LAI' in df:  # Odd format from PRN files
-            break
-        datestr = get_date_from_df_key(df)
-        for index, row in dataframes[df].iterrows():
-            # Row should have the plot name
-            plot_id_name = row[0] + '_' + datestr
-            plot_ids.add(plot_id_name)
-            
-            dummy_pico_name = plot_id_name + ".pico"
-            # Don't create new dummy files if ones alreadt exist!
-            if not os.path.exists(pico_dir + dummy_pico_name):
-                # Write a new dummy pico file
-                with open(pico_dir + dummy_pico_name, "w") as dummypico:
-                    dummypico.writelines(DUMMY_PICO_SPECTRA)
-        
-    
-
-
 def extract_PRN_header_info():
     pass
 

@@ -5,6 +5,7 @@ Created on Mon Feb 26 09:54:34 2018
 
 @author: Declan Valters
 """
+import os
 
 import jpype as jp
 import numpy as np
@@ -278,6 +279,11 @@ class specchioDBinterface(object):
                         self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
             mp.setValue(ancil_metadata[spectra_index][ancildata_key])
             smd.addEntry(mp)
+    
+    def add_ancillary_metadata_for_dummyspectra(self, smd):
+        """You are in a row of the ancil metdata dataframe and you want to add
+        everything on this row to metadata"""
+        pass
 
     def specchio_upload_ancil_with_dummy_spectra(self, ancildir):
         """Uploads ancillary metadata without spectra files.
@@ -290,10 +296,6 @@ class specchioDBinterface(object):
         Upload to DB.
         """
         ancil_data = self.get_all_ancil_metadata(ancildir)
-
-        dummy_spectra_obj = sptypes.SpectralFile()
-        dummy_spectra_file = self.get_dummy_spectra_file()
-
         """
         Logic:
           Dummy pico file created from plot name (and date?)
@@ -306,6 +308,49 @@ class specchioDBinterface(object):
 
           Upload the metdata **to this dummy file** in the ususal way.
         """
+        plot_ids = set()
+        pico_dir = "./picotest/"
+
+        for df in ancil_data:
+            # Get the date from the first part of the dict name before the '_'
+            if 'LAI' in df:  # Odd format from PRN files
+                break
+            datestr = ancilparser.get_date_from_df_key(df)
+            for index, row in ancil_data[df].iterrows():
+                # Row should have the plot name
+                plot_id_name = row[0] + '_' + datestr
+                plot_ids.add(plot_id_name)
+                dummy_pico_name = plot_id_name + ".pico"
+                # Don't create new dummy files if ones already exist!
+                if not os.path.exists(pico_dir + dummy_pico_name):
+                    # Write a new dummy pico file
+                    specp.DummySpectraFile.generate_dummy_spectra_for_ancil(
+                            pico_dir, dummy_pico_name)
+                # Now do all the spectra file object stuff
+                # This is for the Java class...
+                dummy_spectrafile_obj = sptypes.SpectralFile()
+                # And this one for the Python object
+                dummy_spectrafile = specp.DummySpectraFile(
+                    dummy_pico_name, os.path.abspath(pico_dir))
+                self.set_spectra_file_info(dummy_spectrafile_obj,
+                    dummy_spectrafile.dummyfile, dummy_spectrafile.dummspecpath)
+                smd = sptypes.Metadata()
+                dummy_spectrafile_obj.addSpectrumFilename(dummy_pico_name)
+                
+                # Get column by row
+                for colname in row:
+                    assert(colname in self.MAP_ANCIL_METADATA_SPECCHIONAME)
+                    """
+                    Now each column header is a metadata key. It must be added
+                    to each spectra file. PlotID + date.
+                    """
+                    mp = metaparam.newInstance(
+                            self.specchio_client.getAttributesNameHash().get(
+                                self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
+                    mp.setValue(ancil_metadata[spectra_index][ancildata_key])
+                    smd.addEntry(mp)                
+                #self.add_ancillary_metadata_for_dummyspectra(smd, metadata)
+                """check we are not overwriting spectra files somehow"""
 
     def specchio_upload_pico_spectra(self, spectrafile):
         """Upload the PICO type spectra.
