@@ -313,8 +313,10 @@ class specchioDBinterface(object):
 
         for df in ancil_data:
             # Get the date from the first part of the dict name before the '_'
+
             if 'LAI' in df:  # Odd format from PRN files
                 break
+            category = ancilparser.get_category_from_df_key(df)
             datestr = ancilparser.get_date_from_df_key(df)
             for index, row in ancil_data[df].iterrows():
                 # Row should have the plot name
@@ -338,8 +340,9 @@ class specchioDBinterface(object):
                 smd = sptypes.Metadata()
                 dummy_spectrafile_obj.addSpectrumFilename(dummy_pico_name)
 
+                category =
                 # Get column by row
-                for colname in row:
+                for colname in self.MAP_ANCIL_METADATA_SPECCHIONAME[category]:
                     assert(colname in self.MAP_ANCIL_METADATA_SPECCHIONAME)
                     """
                     Now each column header is a metadata key. It must be added

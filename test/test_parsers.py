@@ -87,5 +87,11 @@ class testAncilParser(unittest.TestCase):
         date = adp.get_date_from_df_key(list(dfs.keys())[1])
         self.assertIsNotNone(re.match(pattern, date))
 
+    def get_category_from_df_category(self):
+        """Test the Category stripper"""
+        string =  'ES_F1_20170627_NitrateAmmonia'
+        self.assertEquals(
+            adp.get_category_from_df_key(string, 'NitrateAmmonia'))
+
 if __name__ == '__main__':
     unittest.main()

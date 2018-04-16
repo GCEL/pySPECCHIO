@@ -109,6 +109,10 @@ def get_date_from_df_key(df):
     return df.split('_')[2]
 
 
+def get_category_from_df_key(df):
+    return df.split('_')[-1]
+
+
 def extract_PRN_header_info():
     pass
 
