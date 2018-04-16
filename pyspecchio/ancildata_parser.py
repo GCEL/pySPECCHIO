@@ -117,9 +117,19 @@ def generate_dummy_spectra_for_ancil(dataframes):
       the first row plot name - this is your dummy spectra name for the
       dummy pico file to write out.
     """
+    plot_ids = set()
+    
+    
     for df in dataframes:
         # Get the date from the first part of the dict name before the '_'
+        if 'LAI' in df:  # Odd format from PRN files
+            break
         datestr = get_date_from_df_key(df)
+        for index, row in dataframes[df].iterrows():
+            # Row should have the plot name
+            print(row[0])
+            plot_ids.add(row[0] + '_' + datestr)
+    print(plot_ids)
 
 
 def extract_PRN_header_info():
