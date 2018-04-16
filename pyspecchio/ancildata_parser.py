@@ -35,7 +35,6 @@ def file_and_dict_name(datadir, curdirname, fname):
     # Take off the year bit, as it is also in the filename later
     site_code = site_code[:-4]
     dictname = site_code + os.path.splitext(os.path.basename(fname))[0]
-    print(site_code, dictname)
     return (filefullname, dictname)
 
 
