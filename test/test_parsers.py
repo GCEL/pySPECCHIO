@@ -81,7 +81,9 @@ class testAncilParser(unittest.TestCase):
         import re
         pattern = "^[0-9]{8,8}$"
         dfs = adp.extract_dataframes(self.DATADIR)
-        date = adp.get_date_from_df_key(dfs.keys()[0])
+        # For Python 3, df.keys() returns iterable, not list
+        # For Python 2, already a list
+        date = adp.get_date_from_df_key(list(dfs.keys())[0])
         self.assertIsNotNone(re.match(pattern, date))
 
 if __name__ == '__main__':
