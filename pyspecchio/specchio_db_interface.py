@@ -279,7 +279,7 @@ class specchioDBinterface(object):
                         self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
             mp.setValue(ancil_metadata[spectra_index][ancildata_key])
             smd.addEntry(mp)
-    
+
     def add_ancillary_metadata_for_dummyspectra(self, smd):
         """You are in a row of the ancil metdata dataframe and you want to add
         everything on this row to metadata"""
@@ -333,10 +333,11 @@ class specchioDBinterface(object):
                 dummy_spectrafile = specp.DummySpectraFile(
                     dummy_pico_name, os.path.abspath(pico_dir))
                 self.set_spectra_file_info(dummy_spectrafile_obj,
-                    dummy_spectrafile.dummyfile, dummy_spectrafile.dummspecpath)
+                                           dummy_spectrafile.dummyfile,
+                                           dummy_spectrafile.dummspecpath)
                 smd = sptypes.Metadata()
                 dummy_spectrafile_obj.addSpectrumFilename(dummy_pico_name)
-                
+
                 # Get column by row
                 for colname in row:
                     assert(colname in self.MAP_ANCIL_METADATA_SPECCHIONAME)
@@ -345,11 +346,11 @@ class specchioDBinterface(object):
                     to each spectra file. PlotID + date.
                     """
                     mp = metaparam.newInstance(
-                            self.specchio_client.getAttributesNameHash().get(
-                                self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
+                        self.specchio_client.getAttributesNameHash().get(
+                        self.MAP_ANCIL_METADATA_SPECCHIONAME[ancildata_key]))
                     mp.setValue(ancil_metadata[spectra_index][ancildata_key])
-                    smd.addEntry(mp)                
-                #self.add_ancillary_metadata_for_dummyspectra(smd, metadata)
+                    smd.addEntry(mp)
+                # self.add_ancillary_metadata_for_dummyspectra(smd, metadata)
                 """check we are not overwriting spectra files somehow"""
 
     def specchio_upload_pico_spectra(self, spectrafile):

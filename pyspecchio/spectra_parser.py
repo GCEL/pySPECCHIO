@@ -102,34 +102,34 @@ class DummySpectraFile(SpectraFile):
     """Class that contains dummy spectra for when Metadata have no assoc.
     pico file but need to be inserted into SPECCHIO.
     """
-    DUMMY_PICO_SPECTRA = """{    
- "SequenceNumber": 0, 
+    DUMMY_PICO_SPECTRA = """{
+ "SequenceNumber": 0,
  "Spectra": [
   {
    "Metadata": {
-    "Batch": 0, 
-    "Dark": false, 
-    "Datetime": "2000-01-00T00:00:00.000000Z", 
-    "Direction": "none", 
-    "IntegrationTime": 0.0, 
-    "IntegrationTimeUnits": "none", 
-    "NonlinearityCorrectionCoefficients": [0], 
-    "OpticalPixelRange": [0], 
-    "Run": "dummy", 
-    "SaturationLevel": 0, 
-    "SerialNumber": "QEP01651", 
-    "TemperatureDetectorActual": 0.0, 
-    "TemperatureDetectorSet": 0.0, 
-    "TemperatureHeatsink": null, 
-    "TemperatureMicrocontroller": 0.0, 
-    "TemperaturePCB": 0.0, 
-    "TemperatureUnits": "degrees Celcius", 
-    "Type": "light", 
-    "WavelengthCalibrationCoefficients": [0], 
+    "Batch": 0,
+    "Dark": false,
+    "Datetime": "2000-01-00T00:00:00.000000Z",
+    "Direction": "none",
+    "IntegrationTime": 0.0,
+    "IntegrationTimeUnits": "none",
+    "NonlinearityCorrectionCoefficients": [0],
+    "OpticalPixelRange": [0],
+    "Run": "dummy",
+    "SaturationLevel": 0,
+    "SerialNumber": "QEP01651",
+    "TemperatureDetectorActual": 0.0,
+    "TemperatureDetectorSet": 0.0,
+    "TemperatureHeatsink": null,
+    "TemperatureMicrocontroller": 0.0,
+    "TemperaturePCB": 0.0,
+    "TemperatureUnits": "degrees Celcius",
+    "Type": "light",
+    "WavelengthCalibrationCoefficients": [0],
     "name": "none"
    },
    "Pixels": [0] }}"""
-   
+
     def __init__(self, dummyspecfile, dummyspecpath):
         self.dummyfile = dummyspecfile
         self.dummspecpath = dummyspecpath
@@ -145,8 +145,8 @@ class DummySpectraFile(SpectraFile):
             os.mkdir(pico_dir)
         if not os.path.exists(pico_dir + dummy_pico_name):
             with open(pico_dir + dummy_pico_name, "w") as dummypico:
-                dummypico.writelines(self.DUMMY_PICO_SPECTRA)       
-    
+                dummypico.writelines(self.DUMMY_PICO_SPECTRA)
+
     def get_dummy_pico_name(self):
         pass
 
