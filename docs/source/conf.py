@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pySPECCHIO'
-copyright = '2018, Declan Valters'
+copyright = '2018, University of Edinburgh'
 author = 'Declan Valters'
 
 # The version info for the project you're documenting, acts as replacement for
