@@ -498,21 +498,3 @@ class specchioDBinterface(object):
         spspectra_file.setMeasurements(javafloat_spectra_list)
 
         self.specchio_client.insertSpectralFile(spspectra_file)
-
-if __name__ == "__main__":
-
-    db_interface = specchioDBinterface("Python test campaign")
-
-    # filepath = '/home/centos/Downloads/'
-    # filename = 'spectra.csv'
-    ancil_testpath = "../test/DATA/"
-
-    spectra_testpath = "/home/centos/Downloads/DATA/Spectra_dir/"
-    spectra_file_test = "QEP1USB1_b000000_s000002_light.pico"
-
-    subhierarchy = 'PlotScale'
-    # Create a file object to handle parsing of the files.
-    # spectrafile = specp.SpectraFile(spectra_file_test, spectra_testpath)
-    # Create an interface object to handling interfaceing with SPECCHIO
-    # db_interface.specchio_upload_pico_spectra(spectrafile)
-    db_interface.specchio_upload_ancil_with_dummy_spectra(ancil_testpath)
