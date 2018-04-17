@@ -17,54 +17,54 @@ import argparse
 
 import specchio_db_interface as specchio
 import spectra_parser as spectraparser
-import ancildata_parser as ancilparser
 
 """Read in from command line, datadir, pico spectra dir or files.,
 Date since for new files.
 Get DB interface from a config file
 """
 parser = argparse.ArgumentParser(description='Process data files to be'
-                                 'uploaded to the SPECCHIO database.')
+                                 ' uploaded to the SPECCHIO database.\n')
 parser.add_argument('--data-path', metavar='PATH', type=str,
                     dest='datapath',
                     help='The path to the ancillary data files'
-                    '(Plot-level data that are not spectra files.)')
+                    '(Plot-level data that are not spectra files.)\n')
 parser.add_argument('--spectra-path', metavar='PATH', type=str,
                     dest='spectrapath',
-                    help='The path to the PICO Spectra (.pico) file(s)')
+                    help='The path to the PICO Spectra (.pico) file(s)\n')
 parser.add_argument('--spectra-name', metavar='SPECTRAFILE_NAME', type=str,
                     dest='spectraname', nargs='+',
-                    help='The name to the PICO Spectra (.pico) file(s)')
+                    help='The name to the PICO Spectra (.pico) file(s)\n')
 parser.add_argument('--campaign-name', metavar='CAMPAIGN-NAME', type=str,
                     dest='campaign_name',
                     help='The name of the field campaign. This will be'
                     ' created in the SPECCHIO database if it does not'
-                    ' already exist.')
+                    ' already exist.\n')
 parser.add_argument('--use-dummy-spectra', dest='use_dummy_spectra',
                     action='store_const',
                     const=True,
-                    help='Generate dummy spectra for ancillary data files.'
+                    help='Generate dummy spectra for ancillary data files.\n'
                     'This option will generate dummy spectra files if none are'
-                    'asscoiated with the data files provided. Dummy spectra'
-                    'are required due to the design of the SPECCHIO software,'
-                    'which is centred around the spectra files.\n'
-                    'Dummy spectra will be written to disk.')
+                    ' asscoiated with the data files provided. Dummy spectra'
+                    ' are required due to the design of the SPECCHIO software,'
+                    ' which is centred around the spectra files.\n'
+                    'Dummy spectra will be written to disk.\n')
 parser.add_argument('--test-metadata-upload', dest='test_metadata_mode',
                     action='store_const',
                     const=True,
                     help='Runs the program in test mode, using the data from'
-                    'the test directory, uploading it to a test campaign.\n'
-                    'No further arguments are required.')
+                    ' the test directory, uploading it to a test campaign.\n'
+                    'No further arguments are required.\n')
 parser.add_argument('--test-spectra-upload', dest='test_spectra_mode',
                     action='store_const',
                     const=True,
                     help='Runs the program in test mode, using the data from'
-                    'the test directory, uploading it to a test campaign.\n'
-                    'No further arguments are required.')
+                    ' the test directory, uploading it to a test campaign.\n'
+                    'No further arguments are required.\n')
 
 args = parser.parse_args()
 # Must have at least one of these options:
-if not (args.datapath or args.spectrapath or args.test_spectra_mode or args.test_metadata_mode):
+if not (args.datapath or args.spectrapath or args.test_spectra_mode or
+        args.test_metadata_mode):
     parser.error("No action requested, you must either supply the location"
                  " of the metadata directory with"
                  " the --datapath option or specify --test-mode.")
@@ -108,7 +108,8 @@ if args.test_metadata_mode:
     db_interface.specchio_upload_ancil_with_dummy_spectra(ancilpath)  
 
 if args.test_spectra_mode:
-    spectra_filepath = os.path.join(os.path.abspath("../test/PICO_testdata/"), '')
+    spectra_filepath = os.path.join(os.path.abspath(
+            "../test/PICO_testdata/"), '')
     spectra_filename = "QEP1USB1_b000000_s000002_light.pico"
     if args.campaign_name is None:
         campaign_name = "Test Campaign (spectra_file)"
