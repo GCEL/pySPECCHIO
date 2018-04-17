@@ -37,6 +37,13 @@ def file_and_dict_name(datadir, curdirname, fname):
     dictname = site_code + os.path.splitext(os.path.basename(fname))[0]
     return (filefullname, dictname)
 
+def sanitize_headers(dataframes):
+    for key, df in dataframes.items():
+        try:
+            df.rename(columns=lambda x: x.strip(), inplace=True)
+        except AttributeError as att_err:
+            pass
+    return dataframes
 
 def extract_dataframes(directory):
     for (dirname, subdirs, files) in os.walk(directory):
@@ -53,7 +60,8 @@ def extract_dataframes(directory):
             if re.match("^(?![~$]).*.PRN$", fname):
                 extract_PRN_format(*file_and_dict_name(
                     directory, dirname, fname))
-    return dataframes
+    sanitized_dfs = sanitize_headers(dataframes)
+    return sanitized_dfs
 
 
 def extract_excel_format(filefullname, dictname):
@@ -67,7 +75,7 @@ def extract_excel_format(filefullname, dictname):
         dataframes[dictname].columns = new_header
     if dictname in dataframes:
         # Perhaps log as well if duplicate
-        warnings.warn("always", UserWarning)
+        warnings.warn("Duplicate Dictionary name", UserWarning)
     else:
         dataframes[dictname] = pd.read_excel(filefullname, skiprows=1)
 
@@ -75,7 +83,7 @@ def extract_excel_format(filefullname, dictname):
 def extract_csv_format(filefullname, dictname):
     if dictname in dataframes:
         # Perhaps log as well if duplicate
-        warnings.warn("always", UserWarning)
+        warnings.warn("Duplicate dictionary name", UserWarning)
     else:
         dataframes[dictname] = pd.read_csv(filefullname, skiprows=1)
 
