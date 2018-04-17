@@ -1,5 +1,6 @@
 # pySPECCHIO
 [![Build Status](https://travis-ci.org/dvalters/pySPECCHIO.svg?branch=master)](https://travis-ci.org/dvalters/pySPECCHIO)
+[![Documentation Status](https://readthedocs.org/projects/pyspecchio/badge/?version=latest)](http://pyspecchio.readthedocs.io/en/latest/?badge=latest)
 
 pySPECCHIO is a Python interface and command line utility to upload raw data such as spectra and metadata into the [SPECCHIO spectral information system](http://specchio.ch/). It uses the [JPype](http://jpype.sourceforge.net/) Python-Java bridge package to communicate with the [SPECCHIO API](http://www.specchio.ch/doc/index.html) (written in Java by the SPECCHIO developers). 
 

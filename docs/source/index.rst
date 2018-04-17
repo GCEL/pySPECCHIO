@@ -10,9 +10,22 @@ pySPECCHIO Documentation
    :maxdepth: 2
    :caption: Contents:
 
-pySPECCHIO is a Python interface to the SPECCHIO spectral information system. (www.specchio.ch).
+pySPECCHIO is a Python interface to the SPECCHIO spectral information system. (http://www.specchio.ch).
 
 pySPECCHIO contains a command-line interface for scanning directories of metadata and spectra files and uploading them to the SPECCHIO database.
+
+Installation Requirements
+-------------------------
+
+pySPECCHIO is designed to run with Python version 3 and above. (If you are using the virtual machine image to run SPECCHIO, it should be available already simply by running the command `python3`. But otherwise it can be installed from any of the standard python distributions, such as Anaconda or Miniconda, or through your operating system package manager.
+
+You will need the following Python packages installed:
+
+ - pandas
+ - numpy
+ - xlrd
+ - jpype1
+
 
 Basic Usage
 -----------
