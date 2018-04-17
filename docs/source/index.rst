@@ -19,14 +19,78 @@ Basic Usage
 
 Download the software from the github repository at: https://github.com/dvalters/pySPECCHIO
 
-There is no need to 'install' the software, though a setup.py script will be made available. 
+There is no need to 'install' the software, though a setup.py script will be made available.
 
-Alternatively, navigate to the `pyspecchio` folder and run the uploader with:
+To upload plot-level data, navigate to the `pyspecchio` folder and run the uploader with:
 
-```
-python3 specchio_main.py [PATH_TO_DATADIR]
-```
+.. code-block:: shell
+
+   python3 specchio_main.py --data-path [PATH_TO_DATADIR]
+
 The path should point to the top level directory that contains either the spectra file(s) or the metadata files to be uploaded to the database.
+
+To upload a spectra file (.pico format), the following command is used.
+
+.. code-block:: shell
+
+   python3 specchio_main.py --spectra-path [PATH_TO_SEPCTRA_FILE] --spectra-name [NAME_OF_PICO_SPECTRA_FILE]
+
+Test usage
+----------
+
+A set of test options are included to upload test data to the database.
+
+.. code-block:: shell
+
+   python3 specchio_main.py --test-metadata-upload
+   python3 specchio_main.py --test-spectra-upload
+
+These may be useful to run to verify your SPECCHIO installation is correctly set up and pySPECCHIO can interface with it.
+
+
+Full usage
+----------
+
+.. code-block:: shell
+
+   usage: specchio_main.py [-h] [--data-path PATH] [--spectra-path PATH]
+                        [--spectra-name SPECTRAFILE_NAME [SPECTRAFILE_NAME ...]]
+                        [--campaign-name CAMPAIGN-NAME] [--use-dummy-spectra]
+                        [--test-metadata-upload] [--test-spectra-upload]
+
+   Process data files to be uploaded to the SPECCHIO database.
+
+   optional arguments:
+     -h, --help            show this help message and exit
+
+     --data-path PATH      The path to the ancillary data files (Plot-level data
+                           that are not spectra files.)
+
+     --spectra-path PATH   The path to the PICO Spectra (.pico) file(s)
+
+     --spectra-name SPECTRAFILE_NAME [SPECTRAFILE_NAME ...]
+                           The name to the PICO Spectra (.pico) file(s)
+
+     --campaign-name CAMPAIGN-NAME
+                           The name of the field campaign. This will be created
+                           in the SPECCHIO database if it does not already exist.
+
+     --use-dummy-spectra   Generate dummy spectra for ancillary data files.This
+                           option will generate dummy spectra files if none
+                           are asscoiated with the data files provided. Dummy
+                           spectraare required due to the design of the SPECCHIO
+                           software, which is centred around the spectra files.
+                           Dummy spectra will be written to disk.
+
+     --test-metadata-upload
+                           Runs the program in test mode, using the data fromthe
+                           test directory, uploading it to a test campaign. No
+                           further arguments are required.
+
+     --test-spectra-upload
+                           Runs the program in test mode, using the data from the
+                           test directory, uploading it to a test campaign. No
+                           further arguments are required.
 
 
 
