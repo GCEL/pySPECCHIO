@@ -353,6 +353,8 @@ class specchioDBinterface(object):
 
                 for subcategory in subcateogries:
                     value = row[subcategory]
+                    print(subcategory)
+                    
                     """
                     Now each column header is a metadata key. It must be added
                     to each spectra file. PlotID + date.
@@ -360,11 +362,15 @@ class specchioDBinterface(object):
                     Pop off the value from the row by indexing using the
                     subcategory in the class dictionary.
                     """
+                    
+                    """
                     mp = metaparam.newInstance(
                         self.specchio_client.getAttributesNameHash().get(
                             subcategory))
                     mp.setValue(value)
                     smd.addEntry(mp)
+                    """
+
 
                 """check we are not overwriting spectra files somehow"""
 
