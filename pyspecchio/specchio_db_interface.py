@@ -135,6 +135,7 @@ class specchioDBinterface(object):
         self.c_id = self.specchio_client.insertCampaign(self.campaign)
         # Store the campaign ID in the campaign object
         self.campaign.setId(self.c_id)
+        self.subhierarchy = "PlotData"
 
     def read_metadata(self, filename):
         """ Reads the example metadata csv file and returns a pandas dataframe
@@ -157,7 +158,7 @@ class specchioDBinterface(object):
         spspectra_file.setCompany('UoE')
         # Creating a metadata hierarchy
         hierarchy_id = self.specchio_client.getSubHierarchyId(
-            self.campaign, subhierarchy, 0)
+            self.campaign, self.subhierarchy, 0)
         # 0 argument specifices the hierarchy has no parent.
         # Set the campaign and hierarchy to store in
         spspectra_file.setHierarchyId(hierarchy_id)

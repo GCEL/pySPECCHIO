@@ -49,7 +49,7 @@ parser.add_argument('--use-dummy-spectra', dest='use_dummy_spectra',
                     'are required due to the design of the SPECCHIO software,'
                     'which is centred around the spectra files.\n'
                     'Dummy spectra will be written to disk.')
-parser.add_argument('--test-metadata-upload', dest='test_metaata_mode',
+parser.add_argument('--test-metadata-upload', dest='test_metadata_mode',
                     action='store_const',
                     const=True,
                     help='Runs the program in test mode, using the data from'
@@ -64,7 +64,7 @@ parser.add_argument('--test-spectra-upload', dest='test_spectra_mode',
 
 args = parser.parse_args()
 # Must have at least one of these options:
-if not (args.datapath or args.spectrapath or args.test_mode):
+if not (args.datapath or args.spectrapath or args.test_spectra_mode or args.test_metadata_mode):
     parser.error("No action requested, you must either supply the location"
                  " of the metadata directory with"
                  " the --datapath option or specify --test-mode.")
@@ -95,7 +95,7 @@ if args.datapath:
     db_interface.specchio_upload_ancil_with_dummy_spectra(ancilpath)
 
 if args.test_metadata_mode:
-    if campaign_name is not None:
+    if args.campaign_name is None:
         campaign_name = "Test Campaign"
     else:
         campaign_name = args.campaign_name
@@ -108,14 +108,14 @@ if args.test_metadata_mode:
 if args.test_spectra_mode:
     spectra_filepath = os.path.join(os.path.abspath("../test/PICO_testdata/"), '')
     spectra_filename = "QEP1USB1_b000000_s000002_light.pico"
-    if campaign_name is not None:
+    if args.campaign_name is None:
         campaign_name = "Test Campaign (spectra_file)"
     else:
         campaign_name = args.campaign_name
  
     spectrafile = spectraparser.SpectraFile(spectra_filename, spectra_filepath)
     db_interface = specchio.specchioDBinterface(campaign_name)
-    db_interface.db_interface.specchio_upload_pico_spectra(spectrafile)   
+    db_interface.specchio_upload_pico_spectra(spectrafile)   
     
     
 def new_data():
