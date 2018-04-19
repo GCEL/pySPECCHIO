@@ -396,8 +396,8 @@ class specchioDBinterface(object):
         for i in range(0, num_spectras):
             vector = spectra[i]  # 4 spectras from the PICO
             # TODO: not sure what the wavelengths are yet...use length 1...n
-            for w in range(0, len(vector)):
-                spectra_array[i, w] = vector[w]
+            for index, w in enumerate(vector):
+                spectra_array[index, w] = vector[w]
             # Add wavelens
             spspectra_file_obj.addWvls(
                 [jp.java.lang.Float(x) for x in dummy_wavelens])
