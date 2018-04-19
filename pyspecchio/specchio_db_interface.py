@@ -351,11 +351,11 @@ class specchioDBinterface(object):
 
                 for subcategory in subcateogries:
                     value = row[subcategory]
-                    """Now each column header is a metadata key. It must be added
-                    to each spectra file. PlotID + date.
+                    # Now each column header is a metadata key. It must be added
+                    # to each spectra file. PlotID + date.
 
-                    Pop off the value from the row by indexing using the
-                    subcategory in the class dictionary."""
+                    # Pop off the value from the row by indexing using the
+                    # subcategory in the class dictionary.
                     mp = metaparam.newInstance(
                         self.specchio_client.getAttributesNameHash().get(
                             subcategory))

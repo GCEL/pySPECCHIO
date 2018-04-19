@@ -119,8 +119,8 @@ if args.test_spectra_mode:
     spectrafile = spectraparser.SpectraFile(spectra_filename, spectra_filepath)
     db_interface = specchio.specchioDBinterface(campaign_name)
     db_interface.specchio_upload_pico_spectra(spectrafile)
-    
-    
+
+
 def new_data():
     """Check for new data in the data dir"""
     # Could invlove a database query as well?
