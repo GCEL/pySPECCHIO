@@ -63,7 +63,7 @@ class testAncilParser(unittest.TestCase):
         filefullname = self.TEST_PRN_DIR + "20170714_LAI.PRN"
         adp.extract_PRN_format(filefullname, "TEST_PRN_dict")
 
-        df_line = adp.dataframes['TEST_PRN_dict'].loc[0]
+        # self.assert(df_line = adp.dataframes['TEST_PRN_dict'].loc[0]
 
     def test_generate_PRN_lines(self):
         """Test that we can strip and print the PRN text file lines.
