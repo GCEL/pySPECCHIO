@@ -53,7 +53,8 @@ class SpectraFile(object):
             result = json_normalize(data["Spectra"])
         return result["Pixels"]
 
-    def valid_spectra(self, spectra_num):
+    @classmethod
+    def valid_spectra(cls, spectra_num):
         """Checks the index provided is a valid range for the spectrometer data
         """
         return spectra_num in range(0, 4)

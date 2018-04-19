@@ -9,6 +9,9 @@ SPECCHIO driver
 Coordinates the parsing and uploading of the spectral data to the SPECCHIO
 database
 
+Read in from command line, datadir, pico spectra dir or files.,
+Date since for new files.
+Get DB interface from a config file.
 
 """
 import sys
@@ -18,10 +21,7 @@ import argparse
 import specchio_db_interface as specchio
 import spectra_parser as spectraparser
 
-"""Read in from command line, datadir, pico spectra dir or files.,
-Date since for new files.
-Get DB interface from a config file
-"""
+
 parser = argparse.ArgumentParser(description='Process data files to be'
                                  ' uploaded to the SPECCHIO database.\n')
 parser.add_argument('--data-path', metavar='PATH', type=str,
@@ -99,7 +99,7 @@ if args.test_metadata_mode:
         campaign_name = "Test Campaign"
     else:
         campaign_name = args.campaign_name
-    
+
     ancilpath = os.path.join(os.path.abspath("../test/DATA/"), '')
     
     # VALIDATE PATH!

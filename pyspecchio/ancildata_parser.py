@@ -38,15 +38,15 @@ def file_and_dict_name(datadir, curdirname, fname):
     return (filefullname, dictname)
 
 def sanitize_headers(dataframes):
-    for key, df in dataframes.items():
+    for _, df in dataframes.items():
         try:
             df.rename(columns=lambda x: x.strip(), inplace=True)
-        except AttributeError as att_err:
+        except AttributeError:  # as att_err:
             pass
     return dataframes
 
 def extract_dataframes(directory):
-    for (dirname, subdirs, files) in os.walk(directory):
+    for (dirname, _, files) in os.walk(directory):
         for fname in files:
             # Only match "xlsx" files, exclude recovery/backup files
             if re.match("^(?![~$]).*.xlsx$", fname):

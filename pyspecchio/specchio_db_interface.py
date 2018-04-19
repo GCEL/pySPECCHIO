@@ -208,7 +208,8 @@ class specchioDBinterface(object):
         return np.array(
             [spectrafile.get_spectra_pixels(x) for x in range(0, 4)])
 
-    def get_all_ancil_metadata(self, ancildatadir):
+    @classmethod
+    def get_all_ancil_metadata(cls, ancildatadir):
         """
         Gets all the dataframes from the ancillary data.
         """
@@ -218,7 +219,8 @@ class specchioDBinterface(object):
         """Gets the PlotID from the pico file...somehow"""
         pass
 
-    def get_single_pico_spectra(self, spectra_num):
+    @classmethod
+    def get_single_pico_spectra(cls, spectra_num):
         """Gets a spectra from the PICO json spectra files"""
         return specp.get_spectra_pixels(spectra_num)
 
@@ -322,7 +324,7 @@ class specchioDBinterface(object):
             datestr = ancilparser.get_date_from_df_key(df)
 
             # Loop through the rows in each dataframe
-            for index, row in ancil_data[df].iterrows():
+            for _, row in ancil_data[df].iterrows():
                 # We need to create a unique name for each dummy spectra
                 plot_id_name = row[0] + '_' + datestr
                 plot_ids.add(plot_id_name)
