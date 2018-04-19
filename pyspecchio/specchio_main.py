@@ -75,7 +75,7 @@ if args.spectrapath and args.spectrafile:
     spectra_filename = args.spectraname
     spectra_filepath = args.spectrapath
     campaign_name = args.campaign_name
- 
+
     spectrafile = spectraparser.SpectraFile(spectra_filename, spectra_filepath)
     db_interface = specchio.specchioDBinterface(campaign_name)
     db_interface.db_interface.specchio_upload_pico_spectra(spectrafile)
@@ -105,7 +105,7 @@ if args.test_metadata_mode:
     # VALIDATE PATH!
     
     db_interface = specchio.specchioDBinterface(campaign_name)
-    db_interface.specchio_upload_ancil_with_dummy_spectra(ancilpath)  
+    db_interface.specchio_upload_ancil_with_dummy_spectra(ancilpath)
 
 if args.test_spectra_mode:
     spectra_filepath = os.path.join(os.path.abspath(
@@ -118,12 +118,11 @@ if args.test_spectra_mode:
  
     spectrafile = spectraparser.SpectraFile(spectra_filename, spectra_filepath)
     db_interface = specchio.specchioDBinterface(campaign_name)
-    db_interface.specchio_upload_pico_spectra(spectrafile)   
+    db_interface.specchio_upload_pico_spectra(spectrafile)
     
     
 def new_data():
     """Check for new data in the data dir"""
     # Could invlove a database query as well?
     # Don't waste time overwriting exsiting data
-    raise NotImplemented("Not Implemented this feature yet")
-    return True
+    raise NotImplementedError("Not Implemented this feature yet")
