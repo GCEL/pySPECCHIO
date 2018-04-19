@@ -165,15 +165,6 @@ class specchioDBinterface(object):
         spspectra_file.setHierarchyId(hierarchy_id)
         spspectra_file.setCampaignId(self.c_id)
 
-    def upload_dataframe(self, dataframe, campaign, hierarchy_id):
-        """Uploads a pandas dataframe to SPECCHIO"""
-        raise NotImplementedError
-        """Convert the below function accept a dartaframe and extract the
-        relevant spectra to be uploaded. This must invlve converting
-        the pandas dartaframe columns to various java array types before they
-        can be uploaded."""
-        self.set_spectra_file_info()
-
     def read_test_data(self, filename, filepath):
         """Opens and read the test csv spectra and metadata files into a
         numpy array"""
@@ -187,16 +178,19 @@ class specchioDBinterface(object):
             return wavelengths, spectra, metadata
 
     def get_dummy_spectra_file(self):
-        """Produce some dummy spectra for when uploading metadata only"""
+        """Produce some dummy spectra for when uploading metadata only
         dummy_spectra = None
         with open(dummy_spectra) as df:
             pass
+        """
+        raise NotImplementedError
 
     def get_test_spectra(self):
         """Get spectra from the test file spectra.csv"""
         pass
 
-    def get_all_pico_metadata(self, spectrafile):
+    @classmethod
+    def get_all_pico_metadata(cls, spectrafile):
         """ Gets all the metadata from the PICO JSON spectra files.
 
         Returns:
@@ -204,7 +198,8 @@ class specchioDBinterface(object):
         """
         return [spectrafile.get_spectra_metadata(x) for x in range(0, 4)]
 
-    def get_all_pico_spectra(self, spectrafile):
+    @classmethod
+    def get_all_pico_spectra(cls, spectrafile):
         """Gets a spectra from the PICO json spectra files.
 
         Returns an array of lists, because lists are not same lengths
@@ -251,7 +246,7 @@ class specchioDBinterface(object):
             except KeyError as ke:
                 print("Warning: key: ", ke,
                       " is not in metadata for this spectra.")
-            except RuntimeError as exc:  # Usually a java type conversion error
+            except RuntimeError:  # Usually a java type conversion error
                 try:
                     mp = self.retrieve_metadata_from_hash(metadata_key)
                     mp.setValue(str(metadata[spectra_index][metadata_key]))
@@ -354,8 +349,8 @@ class specchioDBinterface(object):
 
                 for subcategory in subcateogries:
                     value = row[subcategory]
-                    print(subcategory)
-                    
+                    # print(subcategory)
+
                     """
                     Now each column header is a metadata key. It must be added
                     to each spectra file. PlotID + date.
@@ -363,16 +358,11 @@ class specchioDBinterface(object):
                     Pop off the value from the row by indexing using the
                     subcategory in the class dictionary.
                     """
-                    
-                    """
                     mp = metaparam.newInstance(
                         self.specchio_client.getAttributesNameHash().get(
                             subcategory))
                     mp.setValue(value)
                     smd.addEntry(mp)
-                    """
-
-
                 """check we are not overwriting spectra files somehow"""
 
     def specchio_upload_pico_spectra(self, spectrafile):
