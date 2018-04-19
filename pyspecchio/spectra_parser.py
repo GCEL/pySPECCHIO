@@ -135,7 +135,8 @@ class DummySpectraFile(SpectraFile):
         self.dummspecpath = dummyspecpath
         self.generate_dummy_spectra_for_ancil(self.dummspecpath, self.dummyfile)
 
-    def get_date_from_df_key(self, df):
+    @classmethod
+    def get_date_from_df_key(cls, df):
         return df.split('_')[2]
 
     @classmethod
