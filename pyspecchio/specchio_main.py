@@ -101,9 +101,9 @@ if args.test_metadata_mode:
         campaign_name = args.campaign_name
 
     ancilpath = os.path.join(os.path.abspath("../test/DATA/"), '')
-    
+
     # VALIDATE PATH!
-    
+
     db_interface = specchio.specchioDBinterface(campaign_name)
     db_interface.specchio_upload_ancil_with_dummy_spectra(ancilpath)
 

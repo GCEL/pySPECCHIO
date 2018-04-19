@@ -91,7 +91,7 @@ class testAncilParser(unittest.TestCase):
         """Test the Category stripper"""
         string =  'ES_F1_20170627_NitrateAmmonia'
         self.assertEquals(
-            adp.get_category_from_df_key(string, 'NitrateAmmonia')
+            adp.get_category_from_df_key(string), 'NitrateAmmonia')
 
 if __name__ == '__main__':
     unittest.main()

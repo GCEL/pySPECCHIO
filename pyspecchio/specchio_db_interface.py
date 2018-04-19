@@ -351,8 +351,6 @@ class specchioDBinterface(object):
 
                 for subcategory in subcateogries:
                     value = row[subcategory]
-                    # print(subcategory)
-
                     """
                     Now each column header is a metadata key. It must be added
                     to each spectra file. PlotID + date.
@@ -365,7 +363,7 @@ class specchioDBinterface(object):
                             subcategory))
                     mp.setValue(value)
                     smd.addEntry(mp)
-                """check we are not overwriting spectra files somehow"""
+                # check we are not overwriting spectra files somehow
 
     def specchio_upload_pico_spectra(self, spectrafile):
         """Upload the PICO type spectra.

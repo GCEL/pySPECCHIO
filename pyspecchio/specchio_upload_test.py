@@ -37,12 +37,9 @@ while cdl.isAlive:
     time.sleep(delay)
 
 print('Number of parsed files: ', cdl.getParsed_file_Counter)
-print('Number of inserted files: ', cdl.getSuccessful_file_counter)  
+print('Number of inserted files: ', cdl.getSuccessful_file_counter)
 
 
 # class testSpecchio(unittest.TestCase):
 #
 #  def test_bad_package(self):
-
-
-
