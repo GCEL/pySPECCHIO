@@ -1,5 +1,9 @@
+"""
+EXAMPLE script only to show basics of connecting with JPype
+to the SPECCHIO API
+"""
+
 import jpype as jp
-import unittest
 
 def init_jvm(jvmpath=None):
     """
