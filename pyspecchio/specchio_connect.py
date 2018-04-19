@@ -83,7 +83,7 @@ unit = space.getMeasurementUnit().getUnitName()
 def plot_spectra():
     import numpy as np
     import matplotlib.pyplot as plt
-    
+
     axes = plt.gca()
     axes.set_xlim([350,2500])
     axes.set_ylim([0,1])

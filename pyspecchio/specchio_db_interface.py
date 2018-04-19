@@ -137,7 +137,8 @@ class specchioDBinterface(object):
         self.campaign.setId(self.c_id)
         self.subhierarchy = "PlotData"
 
-    def read_metadata(self, filename):
+    @classmethod
+    def read_metadata(cls, filename):
         """ Reads the example metadata csv file and returns a pandas dataframe
         Read in the csv, transposing it because the names are actually
         in the 1st column.
