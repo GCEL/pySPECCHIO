@@ -8,7 +8,13 @@ def init_jvm(jvmpath=None):
     """
     if jp.isJVMStarted():
         return
-    jp.startJVM(jp.getDefaultJVMPath(), "-ea", "-Djava.class.path=/usr/local/SPECCHIO/specchio-client.jar")
+    try:
+        client_java_path = os.environ['SPECCHIO_JAVA_CLIENT']
+        client_java_argument = "-Djava.class.path=" + client_java_path
+        jp.startJVM(jp.getDefaultJVMPath(), "-ea", client_java_argument)
+    except Exception as exc:
+        print(exc)
+        sys.exit(1)
 
 init_jvm()
 
