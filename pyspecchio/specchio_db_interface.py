@@ -397,7 +397,7 @@ class specchioDBinterface(object):
         # A numpy temporary holding array, dims of no of spectra x no of wvls
         spectra_array = np.zeros((num_spectras, num_wavelens))
 
-        for i in range(0, num_spectras -1):
+        for i in range(0, num_spectras):
             vector = spectra[i]  # 4 spectras from the PICO
             # TODO: not sure what the wavelengths are yet...use length 1...n
             for w in range(0, len(vector)):
