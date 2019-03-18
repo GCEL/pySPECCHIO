@@ -386,7 +386,8 @@ class specchioDBinterface(object):
         spectra = self.get_all_pico_spectra(spectrafile)
         metadata = self.get_all_pico_metadata(spectrafile)
         # Should be 4 for PICO file format
-        num_spectras = np.size(spectra)
+        num_spectras = np.size(spectra)  ## odd errors for the other sample PICO? (non USB, s2 one)
+        print(num_spectras)
         # TODO: remove hard coding
         num_wavelens = 2048
         # Should not be hard coded in final version, OK for now...
@@ -396,11 +397,15 @@ class specchioDBinterface(object):
         # A numpy temporary holding array, dims of no of spectra x no of wvls
         spectra_array = np.zeros((num_spectras, num_wavelens))
 
-        for i in range(0, num_spectras):
+        for i in range(0, num_spectras -1):
             vector = spectra[i]  # 4 spectras from the PICO
             # TODO: not sure what the wavelengths are yet...use length 1...n
-            for index, w in enumerate(vector):
-                spectra_array[index, w] = vector[w]
+            # Surely this 'w' should be the num of wavelngths, not the wavelength itself?
+            for w in range(0, len(vector)):
+                spectra_array[i, w] = vector[w]
+                #print (num_spectras, num_wavelens, i, w, len(vector), spectra_array.shape)
+                # !! spectra_array[index, w] = vector[w]
+                # spectra_array[i, w] = vector[w]
             # Add wavelens
             spspectra_file_obj.addWvls(
                 [jp.java.lang.Float(x) for x in dummy_wavelens])

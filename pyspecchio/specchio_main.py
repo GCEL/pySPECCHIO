@@ -111,6 +111,7 @@ if args.test_spectra_mode:
     spectra_filepath = os.path.join(os.path.abspath(
             "../test/PICO_testdata/"), '')
     spectra_filename = "QEP1USB1_b000000_s000002_light.pico"
+    #spectra_filename = "QEPs2_b000000_s000002_light.pico"
     if args.campaign_name is None:
         campaign_name = "Test Campaign (spectra_file)"
     else:
