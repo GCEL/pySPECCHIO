@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 17:08:38 2018
 
-@author: dvalters
-"""
+# Created on Wed Apr 18 17:08:38 2018
+
+# @author: dvalters
+
 # PICO SPECTRA METADATA
-"""
+# ADD METADATA VALUES
 INSERT INTO `specchio`.`attribute`(`name`, `category_id`, `default_storage_field`, `default_unit_id`, `description`)
  VALUES ('Dark', (select category_id from `specchio`.category where name ='General'),
  'string_val', (select unit_id from `specchio`.unit where short_name = ''), 
@@ -74,10 +74,10 @@ INSERT INTO `specchio`.`attribute`(`name`, `category_id`, `default_storage_field
  VALUES ('name', (select category_id from `specchio`.category where name ='General'),
  'string_val', (select unit_id from `specchio`.unit where short_name = ''), 
  'name');
-"""
+
 
 # Categories
-"""
+
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('26', 'Fluorescence', '');
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('27', 'GS', '');
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('28', 'Harvest', '');
@@ -91,9 +91,9 @@ INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES (
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('36', 'ResinExtracts', '');
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('37', 'Moisture', '');
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('38', 'pH', '');
-"""
+
 # Attributes METADATA FROM ANCIL DATA
-"""
+
 INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `category_id`, `default_storage_field`, `cardinality`) VALUES ('402', 'Fertiliser_level', 'Fertiliser Level (GS)', '27', 'double_val', '1');
 INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `category_id`, `default_storage_field`, `cardinality`) VALUES ('403', 'GS', 'GS', '27', 'double_val', '1');
 INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `category_id`, `default_storage_field`, `cardinality`) VALUES ('404', 'Fertiliser_level', 'Fertiliser Level (Harvest)', '28', 'double_val', '1');
@@ -148,4 +148,4 @@ INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `cate
 INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `category_id`, `default_storage_field`) VALUES ('453', 'Moisture%g/g', 'Moisture%g/g', '37', 'double_val');
 INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `category_id`, `default_storage_field`) VALUES ('454', 'Fertiliser_level', 'Fertiliser Level (pH)', '38', 'double_val');
 INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `category_id`, `default_storage_field`) VALUES ('455', 'pH', 'pH', '38', 'double_val');
-"""
+
