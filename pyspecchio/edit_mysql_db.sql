@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
+-- -*- coding: utf-8 -*-
 
-# Created on Wed Apr 18 17:08:38 2018
+-- Created on Wed Apr 18 17:08:38 2018
 
-# @author: dvalters
+-- @author: dvalters
 
-# PICO SPECTRA METADATA
-# ADD METADATA VALUES
+-- PICO SPECTRA METADATA
+-- ADD METADATA VALUES
 INSERT INTO `specchio`.`attribute`(`name`, `category_id`, `default_storage_field`, `default_unit_id`, `description`)
  VALUES ('Dark', (select category_id from `specchio`.category where name ='General'),
  'string_val', (select unit_id from `specchio`.unit where short_name = ''), 
@@ -76,7 +76,7 @@ INSERT INTO `specchio`.`attribute`(`name`, `category_id`, `default_storage_field
  'name');
 
 
-# Categories
+-- Categories
 
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('26', 'Fluorescence', '');
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('27', 'GS', '');
@@ -92,7 +92,7 @@ INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES (
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('37', 'Moisture', '');
 INSERT INTO `specchio`.`category` (`category_id`, `name`, `string_val`) VALUES ('38', 'pH', '');
 
-# Attributes METADATA FROM ANCIL DATA
+-- Attributes METADATA FROM ANCIL DATA
 
 INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `category_id`, `default_storage_field`, `cardinality`) VALUES ('402', 'Fertiliser_level', 'Fertiliser Level (GS)', '27', 'double_val', '1');
 INSERT INTO `specchio`.`attribute` (`attribute_id`, `name`, `description`, `category_id`, `default_storage_field`, `cardinality`) VALUES ('403', 'GS', 'GS', '27', 'double_val', '1');

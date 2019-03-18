@@ -400,12 +400,8 @@ class specchioDBinterface(object):
         for i in range(0, num_spectras -1):
             vector = spectra[i]  # 4 spectras from the PICO
             # TODO: not sure what the wavelengths are yet...use length 1...n
-            # Surely this 'w' should be the num of wavelngths, not the wavelength itself?
             for w in range(0, len(vector)):
-                spectra_array[i, w] = vector[w]
-                #print (num_spectras, num_wavelens, i, w, len(vector), spectra_array.shape)
-                # !! spectra_array[index, w] = vector[w]
-                # spectra_array[i, w] = vector[w]
+                spectra_array[i, w] = vector[w] 
             # Add wavelens
             spspectra_file_obj.addWvls(
                 [jp.java.lang.Float(x) for x in dummy_wavelens])
